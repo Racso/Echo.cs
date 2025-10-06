@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Racso.Echo.LogWriters
 {
-    public class UnityLogWriter : LogWriter
+    internal class UnityLogWriter : LogWriter
     {
         private readonly LogWriterConfig config;
         private readonly StringBuilder stringBuilder = new(256);
@@ -16,11 +16,7 @@ namespace Racso.Echo.LogWriters
 
         public UnityLogWriter(LogWriterConfig config)
         {
-            this.config = config ?? new LogWriterConfig
-            {
-                Timestamp = true,
-                SystemColors = true,
-            };
+            this.config = config ?? throw new ArgumentNullException(nameof(config));
         }
 
         public void WriteLog(LogLevel level, string system, string message)
@@ -31,12 +27,12 @@ namespace Racso.Echo.LogWriters
 
             stringBuilder.Append(LevelColorTags[(int)level]);
             stringBuilder.Append("[");
-            stringBuilder.Append(CoreLogHelper.GetLabel(level));
+            stringBuilder.Append(Helpers.GetLabel(level));
             stringBuilder.Append("]</color>");
 
             if (config.SystemColors)
             {
-                string colorTag = CoreLogHelper.GetElementFromHash(SystemColorTags, system);
+                string colorTag = Helpers.GetElementFromHash(SystemColorTags, system);
                 stringBuilder.Append(colorTag);
                 stringBuilder.Append("[");
                 stringBuilder.Append(system);

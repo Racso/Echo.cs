@@ -1,8 +1,8 @@
 ﻿namespace Racso.Echo
 {
-    internal static class CoreLogHelper
+    internal static class Helpers
     {
-        public static uint FNV1a32(string str, uint hash = 2166136261u)
+        internal static uint FNV1a32(string str, uint hash = 2166136261u)
         {
             // The hash parameter is useful for chaining hashes.
 

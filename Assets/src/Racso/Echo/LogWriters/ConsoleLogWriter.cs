@@ -2,18 +2,14 @@
 
 namespace Racso.Echo.LogWriters
 {
-    public class ConsoleLogWriter : LogWriter
+    internal class ConsoleLogWriter : LogWriter
     {
         private readonly LogWriterConfig config;
         private static readonly ConsoleColor[] ConsoleColors = (ConsoleColor[])Enum.GetValues(typeof(ConsoleColor));
 
         public ConsoleLogWriter(LogWriterConfig config)
         {
-            this.config = config ?? new LogWriterConfig
-            {
-                Timestamp = true,
-                SystemColors = true,
-            };
+            this.config = config ?? throw new ArgumentNullException(nameof(config));
         }
 
         public void WriteLog(LogLevel level, string system, string message)
@@ -22,7 +18,7 @@ namespace Racso.Echo.LogWriters
             Console.Write("[{0:yyyy-MM-dd HH:mm:ss.fff}] ", DateTime.Now);
 
             Console.ForegroundColor = GetLevelColor(level);
-            Console.Write(CoreLogHelper.GetLabel(level));
+            Console.Write(Helpers.GetLabel(level));
             Console.Write(" ");
 
             Console.ForegroundColor = GetConsoleColor(system);
@@ -36,7 +32,7 @@ namespace Racso.Echo.LogWriters
 
         private ConsoleColor GetConsoleColor(string system)
         {
-            uint hash = CoreLogHelper.FNV1a32(system);
+            uint hash = Helpers.FNV1a32(system);
             int index = (int)(hash % (uint)ConsoleColors.Length);
             return ConsoleColors[index];
         }
