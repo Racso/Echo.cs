@@ -32,270 +32,175 @@ namespace Racso.Echo
             return onceHashes.Add(hash);
         }
 
-        private void WriteLog(LogLevel level, string system, string message)
+        private void Write(LogLevel level, bool logOnce, string system, string message)
         {
-            logWriter.WriteLog(level, system, message);
+            if (!logOnce || ShouldLogOnce(system, message))
+                logWriter.WriteLog(level, system, message);
         }
 
-        private void TryLogOnce(string system, LogLevel level, string message)
+        private void WriteIfEnabled(LogLevel level, bool logOnce, string system, string message)
         {
-            if (ShouldLogOnce(system, message))
-                WriteLog(level, system, message);
+            if (!IsEnabled(system, level))
+                Write(level, logOnce, system, message);
+        }
+
+        private void WriteIfEnabled<T1>(LogLevel level, bool logOnce, string system, string format, T1 param1)
+        {
+            if (IsEnabled(system, level))
+                Write(level, logOnce, system, string.Format(format, param1));
+        }
+
+        private void WriteIfEnabled<T1, T2>(LogLevel level, bool logOnce, string system, string format, T1 param1, T2 param2)
+        {
+            if (IsEnabled(system, level))
+                Write(level, logOnce, system, string.Format(format, param1, param2));
+        }
+
+        private void WriteIfEnabled<T1, T2, T3>(LogLevel level, bool logOnce, string system, string format, T1 param1, T2 param2, T3 param3)
+        {
+            if (IsEnabled(system, level))
+                Write(level, logOnce, system, string.Format(format, param1, param2, param3));
+        }
+
+        private void WriteIfEnabled<T1, T2, T3, T4>(LogLevel level, bool logOnce, string system, string format, T1 param1, T2 param2, T3 param3, T4 param4)
+        {
+            if (IsEnabled(system, level))
+                Write(level, logOnce, system, string.Format(format, param1, param2, param3, param4));
         }
 
         #region Debug Methods
 
         public void Debug(string system, string message)
-        {
-            if (IsEnabled(system, LogLevel.Debug))
-                WriteLog(LogLevel.Debug, system, message);
-        }
+            => WriteIfEnabled(LogLevel.Debug, false, system, message);
 
         public void Debug<T1>(string system, string format, T1 param1)
-        {
-            if (IsEnabled(system, LogLevel.Debug))
-                WriteLog(LogLevel.Debug, system, string.Format(format, param1));
-        }
+            => WriteIfEnabled(LogLevel.Debug, false, system, format, param1);
 
         public void Debug<T1, T2>(string system, string format, T1 param1, T2 param2)
-        {
-            if (IsEnabled(system, LogLevel.Debug))
-                WriteLog(LogLevel.Debug, system, string.Format(format, param1, param2));
-        }
+            => WriteIfEnabled(LogLevel.Debug, false, system, format, param1, param2);
 
         public void Debug<T1, T2, T3>(string system, string format, T1 param1, T2 param2, T3 param3)
-        {
-            if (IsEnabled(system, LogLevel.Debug))
-                WriteLog(LogLevel.Debug, system, string.Format(format, param1, param2, param3));
-        }
+            => WriteIfEnabled(LogLevel.Debug, false, system, format, param1, param2, param3);
 
         public void Debug<T1, T2, T3, T4>(string system, string format, T1 param1, T2 param2, T3 param3, T4 param4)
-        {
-            if (IsEnabled(system, LogLevel.Debug))
-                WriteLog(LogLevel.Debug, system, string.Format(format, param1, param2, param3, param4));
-        }
+            => WriteIfEnabled(LogLevel.Debug, false, system, format, param1, param2, param3, param4);
 
         public void Debug1(string system, string message)
-        {
-            if (IsEnabled(system, LogLevel.Debug))
-                TryLogOnce(system, LogLevel.Debug, message);
-        }
+            => WriteIfEnabled(LogLevel.Debug, true, system, message);
 
         public void Debug1<T1>(string system, string format, T1 param1)
-        {
-            if (IsEnabled(system, LogLevel.Debug))
-                TryLogOnce(system, LogLevel.Debug, string.Format(format, param1));
-        }
+            => WriteIfEnabled(LogLevel.Debug, true, system, format, param1);
 
         public void Debug1<T1, T2>(string system, string format, T1 param1, T2 param2)
-        {
-            if (IsEnabled(system, LogLevel.Debug))
-                TryLogOnce(system, LogLevel.Debug, string.Format(format, param1, param2));
-        }
+            => WriteIfEnabled(LogLevel.Debug, true, system, format, param1, param2);
 
         public void Debug1<T1, T2, T3>(string system, string format, T1 param1, T2 param2, T3 param3)
-        {
-            if (IsEnabled(system, LogLevel.Debug))
-                TryLogOnce(system, LogLevel.Debug, string.Format(format, param1, param2, param3));
-        }
+            => WriteIfEnabled(LogLevel.Debug, true, system, format, param1, param2, param3);
 
         public void Debug1<T1, T2, T3, T4>(string system, string format, T1 param1, T2 param2, T3 param3, T4 param4)
-        {
-            if (IsEnabled(system, LogLevel.Debug))
-                TryLogOnce(system, LogLevel.Debug, string.Format(format, param1, param2, param3, param4));
-        }
+            => WriteIfEnabled(LogLevel.Debug, true, system, format, param1, param2, param3, param4);
 
         #endregion
 
         #region Info Methods
 
         public void Info(string system, string message)
-        {
-            if (IsEnabled(system, LogLevel.Info))
-                WriteLog(LogLevel.Info, system, message);
-        }
+            => WriteIfEnabled(LogLevel.Info, false, system, message);
 
         public void Info<T1>(string system, string format, T1 param1)
-        {
-            if (IsEnabled(system, LogLevel.Info))
-                WriteLog(LogLevel.Info, system, string.Format(format, param1));
-        }
+            => WriteIfEnabled(LogLevel.Info, false, system, format, param1);
 
         public void Info<T1, T2>(string system, string format, T1 param1, T2 param2)
-        {
-            if (IsEnabled(system, LogLevel.Info))
-                WriteLog(LogLevel.Info, system, string.Format(format, param1, param2));
-        }
+            => WriteIfEnabled(LogLevel.Info, false, system, format, param1, param2);
 
         public void Info<T1, T2, T3>(string system, string format, T1 param1, T2 param2, T3 param3)
-        {
-            if (IsEnabled(system, LogLevel.Info))
-                WriteLog(LogLevel.Info, system, string.Format(format, param1, param2, param3));
-        }
+            => WriteIfEnabled(LogLevel.Info, false, system, format, param1, param2, param3);
 
         public void Info<T1, T2, T3, T4>(string system, string format, T1 param1, T2 param2, T3 param3, T4 param4)
-        {
-            if (IsEnabled(system, LogLevel.Info))
-                WriteLog(LogLevel.Info, system, string.Format(format, param1, param2, param3, param4));
-        }
+            => WriteIfEnabled(LogLevel.Info, false, system, format, param1, param2, param3, param4);
 
         public void Info1(string system, string message)
-        {
-            if (IsEnabled(system, LogLevel.Info))
-                TryLogOnce(system, LogLevel.Info, message);
-        }
+            => WriteIfEnabled(LogLevel.Info, true, system, message);
 
         public void Info1<T1>(string system, string format, T1 param1)
-        {
-            if (IsEnabled(system, LogLevel.Info))
-                TryLogOnce(system, LogLevel.Info, string.Format(format, param1));
-        }
+            => WriteIfEnabled(LogLevel.Info, true, system, format, param1);
 
         public void Info1<T1, T2>(string system, string format, T1 param1, T2 param2)
-        {
-            if (IsEnabled(system, LogLevel.Info))
-                TryLogOnce(system, LogLevel.Info, string.Format(format, param1, param2));
-        }
+            => WriteIfEnabled(LogLevel.Info, true, system, format, param1, param2);
 
         public void Info1<T1, T2, T3>(string system, string format, T1 param1, T2 param2, T3 param3)
-        {
-            if (IsEnabled(system, LogLevel.Info))
-                TryLogOnce(system, LogLevel.Info, string.Format(format, param1, param2, param3));
-        }
+            => WriteIfEnabled(LogLevel.Info, true, system, format, param1, param2, param3);
 
         public void Info1<T1, T2, T3, T4>(string system, string format, T1 param1, T2 param2, T3 param3, T4 param4)
-        {
-            if (IsEnabled(system, LogLevel.Info))
-                TryLogOnce(system, LogLevel.Info, string.Format(format, param1, param2, param3, param4));
-        }
+            => WriteIfEnabled(LogLevel.Info, true, system, format, param1, param2, param3, param4);
 
         #endregion
 
         #region Warn Methods
 
         public void Warn(string system, string message)
-        {
-            if (IsEnabled(system, LogLevel.Warn))
-                WriteLog(LogLevel.Warn, system, message);
-        }
+            => WriteIfEnabled(LogLevel.Warn, false, system, message);
 
         public void Warn<T1>(string system, string format, T1 param1)
-        {
-            if (IsEnabled(system, LogLevel.Warn))
-                WriteLog(LogLevel.Warn, system, string.Format(format, param1));
-        }
+            => WriteIfEnabled(LogLevel.Warn, false, system, format, param1);
 
         public void Warn<T1, T2>(string system, string format, T1 param1, T2 param2)
-        {
-            if (IsEnabled(system, LogLevel.Warn))
-                WriteLog(LogLevel.Warn, system, string.Format(format, param1, param2));
-        }
+            => WriteIfEnabled(LogLevel.Warn, false, system, format, param1, param2);
 
         public void Warn<T1, T2, T3>(string system, string format, T1 param1, T2 param2, T3 param3)
-        {
-            if (IsEnabled(system, LogLevel.Warn))
-                WriteLog(LogLevel.Warn, system, string.Format(format, param1, param2, param3));
-        }
+            => WriteIfEnabled(LogLevel.Warn, false, system, format, param1, param2, param3);
 
         public void Warn<T1, T2, T3, T4>(string system, string format, T1 param1, T2 param2, T3 param3, T4 param4)
-        {
-            if (IsEnabled(system, LogLevel.Warn))
-                WriteLog(LogLevel.Warn, system, string.Format(format, param1, param2, param3, param4));
-        }
+            => WriteIfEnabled(LogLevel.Warn, false, system, format, param1, param2, param3, param4);
 
         public void Warn1(string system, string message)
-        {
-            if (IsEnabled(system, LogLevel.Warn))
-                TryLogOnce(system, LogLevel.Warn, message);
-        }
+            => WriteIfEnabled(LogLevel.Warn, true, system, message);
 
         public void Warn1<T1>(string system, string format, T1 param1)
-        {
-            if (IsEnabled(system, LogLevel.Warn))
-                TryLogOnce(system, LogLevel.Warn, string.Format(format, param1));
-        }
+            => WriteIfEnabled(LogLevel.Warn, true, system, format, param1);
 
         public void Warn1<T1, T2>(string system, string format, T1 param1, T2 param2)
-        {
-            if (IsEnabled(system, LogLevel.Warn))
-                TryLogOnce(system, LogLevel.Warn, string.Format(format, param1, param2));
-        }
+            => WriteIfEnabled(LogLevel.Warn, true, system, format, param1, param2);
 
         public void Warn1<T1, T2, T3>(string system, string format, T1 param1, T2 param2, T3 param3)
-        {
-            if (IsEnabled(system, LogLevel.Warn))
-                TryLogOnce(system, LogLevel.Warn, string.Format(format, param1, param2, param3));
-        }
+            => WriteIfEnabled(LogLevel.Warn, true, system, format, param1, param2, param3);
 
         public void Warn1<T1, T2, T3, T4>(string system, string format, T1 param1, T2 param2, T3 param3, T4 param4)
-        {
-            if (IsEnabled(system, LogLevel.Warn))
-                TryLogOnce(system, LogLevel.Warn, string.Format(format, param1, param2, param3, param4));
-        }
+            => WriteIfEnabled(LogLevel.Warn, true, system, format, param1, param2, param3, param4);
 
         #endregion
 
         #region Error Methods
 
         public void Error(string system, string message)
-        {
-            if (IsEnabled(system, LogLevel.Error))
-                WriteLog(LogLevel.Error, system, message);
-        }
+            => WriteIfEnabled(LogLevel.Error, false, system, message);
 
         public void Error<T1>(string system, string format, T1 param1)
-        {
-            if (IsEnabled(system, LogLevel.Error))
-                WriteLog(LogLevel.Error, system, string.Format(format, param1));
-        }
+            => WriteIfEnabled(LogLevel.Error, false, system, format, param1);
 
         public void Error<T1, T2>(string system, string format, T1 param1, T2 param2)
-        {
-            if (IsEnabled(system, LogLevel.Error))
-                WriteLog(LogLevel.Error, system, string.Format(format, param1, param2));
-        }
+            => WriteIfEnabled(LogLevel.Error, false, system, format, param1, param2);
 
         public void Error<T1, T2, T3>(string system, string format, T1 param1, T2 param2, T3 param3)
-        {
-            if (IsEnabled(system, LogLevel.Error))
-                WriteLog(LogLevel.Error, system, string.Format(format, param1, param2, param3));
-        }
+            => WriteIfEnabled(LogLevel.Error, false, system, format, param1, param2, param3);
 
         public void Error<T1, T2, T3, T4>(string system, string format, T1 param1, T2 param2, T3 param3, T4 param4)
-        {
-            if (IsEnabled(system, LogLevel.Error))
-                WriteLog(LogLevel.Error, system, string.Format(format, param1, param2, param3, param4));
-        }
+            => WriteIfEnabled(LogLevel.Error, false, system, format, param1, param2, param3, param4);
 
         public void Error1(string system, string message)
-        {
-            if (IsEnabled(system, LogLevel.Error))
-                TryLogOnce(system, LogLevel.Error, message);
-        }
+            => WriteIfEnabled(LogLevel.Error, true, system, message);
 
         public void Error1<T1>(string system, string format, T1 param1)
-        {
-            if (IsEnabled(system, LogLevel.Error))
-                TryLogOnce(system, LogLevel.Error, string.Format(format, param1));
-        }
+            => WriteIfEnabled(LogLevel.Error, true, system, format, param1);
 
         public void Error1<T1, T2>(string system, string format, T1 param1, T2 param2)
-        {
-            if (IsEnabled(system, LogLevel.Error))
-                TryLogOnce(system, LogLevel.Error, string.Format(format, param1, param2));
-        }
+            => WriteIfEnabled(LogLevel.Error, true, system, format, param1, param2);
 
         public void Error1<T1, T2, T3>(string system, string format, T1 param1, T2 param2, T3 param3)
-        {
-            if (IsEnabled(system, LogLevel.Error))
-                TryLogOnce(system, LogLevel.Error, string.Format(format, param1, param2, param3));
-        }
+            => WriteIfEnabled(LogLevel.Error, true, system, format, param1, param2, param3);
 
         public void Error1<T1, T2, T3, T4>(string system, string format, T1 param1, T2 param2, T3 param3, T4 param4)
-        {
-            if (IsEnabled(system, LogLevel.Error))
-                TryLogOnce(system, LogLevel.Error, string.Format(format, param1, param2, param3, param4));
-        }
+            => WriteIfEnabled(LogLevel.Error, true, system, format, param1, param2, param3, param4);
 
         #endregion
     }
