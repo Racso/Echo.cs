@@ -13,8 +13,12 @@ namespace Racso.Echo
         {
             writer = writer ?? throw new ArgumentNullException(nameof(writer));
 
-            EchoLogLevelsConfig config = new EchoLogLevelsConfig();
-            HashesManager hashes = new HashesManager();
+            EchoLogLevelsConfig config = new();
+#if UNITY_2017_1_OR_NEWER
+            Editor.EchoEditorState.LogLevels = config;
+#endif
+
+            HashesManager hashes = new();
             loggerCore = new LoggerCore(config, hashes, writer);
         }
 

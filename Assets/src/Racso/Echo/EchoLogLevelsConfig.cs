@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Racso.Echo
 {
-    public class EchoLogLevelsConfig
+    internal class EchoLogLevelsConfig
     {
         private readonly Dictionary<string, LogLevel> systemLevels = new();
 
