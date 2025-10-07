@@ -14,7 +14,7 @@ namespace Racso.Echo
             writer = writer ?? throw new ArgumentNullException(nameof(writer));
 
             EchoLogLevelsConfig config = new();
-#if UNITY_2017_1_OR_NEWER
+#if UNITY_EDITOR
             Editor.EchoEditorState.LogLevels = config;
 #endif
 

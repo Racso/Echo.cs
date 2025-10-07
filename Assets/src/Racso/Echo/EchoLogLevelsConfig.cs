@@ -35,6 +35,8 @@ namespace Racso.Echo
             Updated?.Invoke();
         }
 
+        public IReadOnlyDictionary<string, LogLevel> GetAllSystemLevels() => systemLevels;
+
         private void ThrowIfInvalidSystem(string system)
         {
             if (string.IsNullOrEmpty(system))

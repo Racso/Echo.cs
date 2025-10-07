@@ -1,12 +1,25 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
+using Unity.Plastic.Newtonsoft.Json;
+using UnityEngine;
 
-#if UNITY_2017_1_OR_NEWER
+#if UNITY_EDITOR
 
 namespace Racso.Echo.Editor
 {
+    public static class EchoEditor
+    {
+        public static void SetSystems(Type type)
+        {
+            EchoEditorState.SetSystemNames(type);
+        }
+    }
+
     internal static class EchoEditorState
     {
         private static EchoLogLevelsConfig _logLevels;
+        private static List<string> _systemNames = new();
 
         public static EchoLogLevelsConfig LogLevels
         {
@@ -24,6 +37,41 @@ namespace Racso.Echo.Editor
             }
         }
 
+        public static List<string> SystemNames => _systemNames;
+
+        public static void SetSystemNames(Type type)
+        {
+            _systemNames = GetStaticStringMembers(type);
+        }
+
+        public static List<string> GetStaticStringMembers(Type staticClassType)
+        {
+            List<string> result = new List<string>();
+
+            foreach (FieldInfo field in staticClassType.GetFields(BindingFlags.Public | BindingFlags.Static))
+            {
+                if (field.FieldType == typeof(string))
+                {
+                    string value = field.GetValue(null) as string;
+                    if (value != null)
+                        result.Add(value);
+                }
+            }
+
+            // Get public static properties
+            foreach (PropertyInfo prop in staticClassType.GetProperties(BindingFlags.Public | BindingFlags.Static))
+            {
+                if (prop.PropertyType == typeof(string) && prop.CanRead)
+                {
+                    string value = prop.GetValue(null) as string;
+                    if (value != null)
+                        result.Add(value);
+                }
+            }
+
+            return result;
+        }
+
         private static void InitializeFromEditorPrefs()
         {
             if (_logLevels == null)
@@ -34,16 +82,16 @@ namespace Racso.Echo.Editor
             if (string.IsNullOrEmpty(json))
                 return;
 
-            EditorPrefsData data = UnityEngine.JsonUtility.FromJson<EditorPrefsData>(json);
+            EditorPrefsData data = JsonConvert.DeserializeObject<EditorPrefsData>(json);
             if (data == null)
                 return;
 
             _logLevels.SetDefaultLevel(data.DefaultLevel);
             _logLevels.ClearSystemLevels();
-            foreach (var kvp in data.SystemLevels)
+            foreach (KeyValuePair<string, LogLevel> kvp in data.SystemLevels)
                 _logLevels.SetSystemLevel(kvp.Key, kvp.Value);
         }
-        
+
         private static void OnLevelsUpdated()
         {
             if (_logLevels == null)
@@ -55,34 +103,31 @@ namespace Racso.Echo.Editor
                 SystemLevels = new Dictionary<string, LogLevel>()
             };
 
-            // Assuming we have access to the internal dictionary of system levels.
-            // If not, we would need to add a method in EchoLogLevelsConfig to get all system levels.
-            foreach (var field in typeof(EchoLogLevelsConfig).GetField("systemLevels", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(_logLevels) as Dictionary<string, LogLevel>)
-            {
+            foreach (KeyValuePair<string, LogLevel> field in _logLevels.GetAllSystemLevels())
                 data.SystemLevels[field.Key] = field.Value;
-            }
 
-            string json = UnityEngine.JsonUtility.ToJson(data);
+            string json = JsonConvert.SerializeObject(data);
             string key = "Racso.Echo";
             UnityEditor.EditorPrefs.SetString(key, json);
+
+            Debug.Log("Echo log levels updated and saved to EditorPrefs: " + json);
         }
 
-        [UnityEngine.RuntimeInitializeOnLoadMethod(UnityEngine.RuntimeInitializeLoadType.SubsystemRegistration)]
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void Clear()
         {
-            if (LogLevels != null)
-                LogLevels.Updated -= OnLevelsUpdated;
-            LogLevels = null;
+            if (_logLevels != null)
+                _logLevels.Updated -= OnLevelsUpdated;
+            _logLevels = null;
         }
 
+        [Serializable]
         private class EditorPrefsData
         {
             public LogLevel DefaultLevel;
             public Dictionary<string, LogLevel> SystemLevels = new();
         }
     }
-
-    // Write an Editor Window to configure the log levels on runtime.
 }
 
 #endif

@@ -23,12 +23,11 @@ namespace Racso.Echo.LogWriters
         {
             stringBuilder.Clear();
             if (config.Timestamp)
-                stringBuilder.AppendFormat("[{0:yyyy-MM-dd HH:mm:ss.fff}] ", DateTime.Now);
+                stringBuilder.AppendFormat("[{0:yyyy-MM-dd HH:mm:ss.fff}]", DateTime.Now);
 
             stringBuilder.Append(LevelColorTags[(int)level]);
-            stringBuilder.Append("[");
             stringBuilder.Append(Helpers.GetLabel(level));
-            stringBuilder.Append("]</color>");
+            stringBuilder.Append("</color>");
 
             if (config.SystemColors)
             {
@@ -81,10 +80,7 @@ namespace Racso.Echo.LogWriters
         }
 
         private static string ColorToTag(Color color)
-        {
-            return $"<color={color}>";
-            //return $"<color=#{ColorUtility.ToHtmlStringRGB(color)}>";
-        }
+            => $"<color=#{ColorUtility.ToHtmlStringRGB(color)}>";
     }
 }
 #endif
