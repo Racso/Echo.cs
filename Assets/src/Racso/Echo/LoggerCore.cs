@@ -32,7 +32,7 @@ namespace Racso.Echo
 
         public void WriteIfEnabled(LogLevel level, LogMode mode, string system, string message)
         {
-            if (!IsEnabled(system, level))
+            if (IsEnabled(system, level))
                 Write(level, mode, system, message);
         }
 
