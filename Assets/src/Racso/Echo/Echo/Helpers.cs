@@ -15,18 +15,6 @@
             return hash;
         }
 
-        internal static string GetLabel(LogLevel level)
-        {
-            return level switch
-            {
-                LogLevel.Debug => "[DEBUG]",
-                LogLevel.Info => "[INFO]",
-                LogLevel.Warn => "[WARN]",
-                LogLevel.Error => "[ERROR]",
-                _ => "[???]"
-            };
-        }
-
         internal static T GetElementFromHash<T>(T[] collection, string stringToHash)
         {
             uint hash = FNV1a32(stringToHash);

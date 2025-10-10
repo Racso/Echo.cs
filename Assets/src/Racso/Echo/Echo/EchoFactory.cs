@@ -8,18 +8,14 @@ namespace Racso.Echo
     {
         private readonly LoggerCore loggerCore;
         private readonly Dictionary<string, object> loggers = new();
+        private readonly EchoSettings levelsConfig;
 
-        public EchoFactory(LogWriter writer)
+        public EchoFactory(EchoLogWriter writer)
         {
             writer = writer ?? throw new ArgumentNullException(nameof(writer));
-
-            EchoLogLevelsConfig config = new();
-#if UNITY_EDITOR
-            Editor.EchoEditorState.LogLevels = config;
-#endif
-
             HashesManager hashes = new();
-            loggerCore = new LoggerCore(config, hashes, writer);
+            levelsConfig = new();
+            loggerCore = new LoggerCore(levelsConfig, hashes, writer);
         }
 
 #if UNITY_2017_1_OR_NEWER
@@ -57,5 +53,7 @@ namespace Racso.Echo
                 loggers[system] = new EchoSystemLogger(loggerCore, system);
             return (EchoSystemLogger)loggers[system];
         }
+
+        public EchoSettings LogLevels => levelsConfig;
     }
 }

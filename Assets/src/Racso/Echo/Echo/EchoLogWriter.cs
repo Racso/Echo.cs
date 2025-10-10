@@ -1,6 +1,6 @@
 ﻿namespace Racso.Echo
 {
-    public interface LogWriter
+    public interface EchoLogWriter
     {
         public void WriteLog(LogLevel level, string system, string message);
     }

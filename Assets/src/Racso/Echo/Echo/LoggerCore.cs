@@ -4,19 +4,19 @@ namespace Racso.Echo
 {
     internal class LoggerCore
     {
-        private readonly LogWriter logWriter;
-        private readonly EchoLogLevelsConfig echoLogLevelsConfig;
+        private readonly EchoLogWriter logWriter;
+        private readonly EchoSettings echoSettings;
         private readonly HashesManager hashes;
 
-        public LoggerCore(EchoLogLevelsConfig config, HashesManager hashes, LogWriter logger)
+        public LoggerCore(EchoSettings config, HashesManager hashes, EchoLogWriter logger)
         {
-            this.echoLogLevelsConfig = config ?? throw new ArgumentNullException(nameof(config));
+            this.echoSettings = config ?? throw new ArgumentNullException(nameof(config));
             this.hashes = hashes ?? throw new ArgumentNullException(nameof(hashes));
             this.logWriter = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         private bool IsEnabled(string system, LogLevel level)
-            => level <= echoLogLevelsConfig.GetSystemLevel(system);
+            => level <= echoSettings.GetSystemLevel(system);
 
         private bool ShouldLogOnce(string system, string message)
             => hashes.TryAdd(system, message);
