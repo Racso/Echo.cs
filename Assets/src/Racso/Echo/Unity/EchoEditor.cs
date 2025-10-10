@@ -1,16 +1,15 @@
-﻿#if UNITY_EDITOR
+﻿#if UNITY_2017_1_OR_NEWER
 
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Unity.Plastic.Newtonsoft.Json;
 using UnityEngine;
 
-namespace Racso.Echo.Editor
+namespace Racso.Echo.Unity
 {
     public static class EchoEditor
     {
-        private const string EditorPrefsKey = "Racso.Echo";
+        public static event Action Updated;
 
         public static void Setup(EchoSettings settings, IEnumerable<string> systemNames)
         {
@@ -18,7 +17,6 @@ namespace Racso.Echo.Editor
             Settings = settings;
             if (Settings != null)
             {
-                InitializeFromEditorPrefs();
                 Settings.Updated += OnLevelsUpdated;
             }
 
@@ -29,9 +27,9 @@ namespace Racso.Echo.Editor
         public static void Setup(EchoSettings settings, Type systemNamesClass)
             => Setup(settings, GetStaticStringMembers(systemNamesClass));
 
-        internal static EchoSettings Settings { get; private set; }
+        public static EchoSettings Settings { get; private set; }
 
-        internal static List<string> SystemNames { get; } = new();
+        public static List<string> SystemNames { get; } = new();
 
         private static List<string> GetStaticStringMembers(Type staticClassType)
         {
@@ -52,43 +50,9 @@ namespace Racso.Echo.Editor
             return result;
         }
 
-        private static void InitializeFromEditorPrefs()
-        {
-            if (Settings == null)
-                return;
-
-            string json = UnityEditor.EditorPrefs.GetString(EditorPrefsKey, null);
-            if (string.IsNullOrEmpty(json))
-                return;
-
-            EditorPrefsData data = JsonConvert.DeserializeObject<EditorPrefsData>(json);
-            if (data == null)
-                return;
-
-            Settings.SetDefaultLevel(data.DefaultLevel);
-            Settings.ClearSystemLevels();
-            foreach (var kvp in data.SystemLevels)
-                Settings.SetSystemLevel(kvp.Key, kvp.Value);
-        }
-
         private static void OnLevelsUpdated()
         {
-            if (Settings == null)
-                return;
-
-            EditorPrefsData data = new()
-            {
-                DefaultLevel = Settings.DefaultLevel,
-                SystemLevels = new Dictionary<string, LogLevel>()
-            };
-
-            foreach (KeyValuePair<string, LogLevel> field in Settings.GetAllSystemLevels())
-                data.SystemLevels[field.Key] = field.Value;
-
-            string json = JsonConvert.SerializeObject(data);
-            UnityEditor.EditorPrefs.SetString(EditorPrefsKey, json);
-
-            Debug.Log("Echo log levels updated and saved to EditorPrefs: " + json);
+            Updated?.Invoke();
         }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
@@ -98,13 +62,7 @@ namespace Racso.Echo.Editor
                 Settings.Updated -= OnLevelsUpdated;
             Settings = null;
             SystemNames.Clear();
-        }
-
-        [Serializable]
-        private class EditorPrefsData
-        {
-            public LogLevel DefaultLevel;
-            public Dictionary<string, LogLevel> SystemLevels = new();
+            Updated = null;
         }
     }
 }

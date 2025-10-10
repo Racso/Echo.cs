@@ -1,8 +1,8 @@
 using System;
 using System.Collections;
 using Racso.Echo;
-using Racso.Echo.Editor;
 using Racso.Echo.LogWriters;
+using Racso.Echo.Unity;
 using UnityEngine;
 
 public class EchoDemoScript : MonoBehaviour
@@ -33,6 +33,8 @@ public class EchoDemoScript : MonoBehaviour
         EchoFactory factory = new(); // Optional LogWriterConfig can be passed to customize the built-in writer.
         EchoSettings settings = factory.LogLevels;
         EchoEditor.Setup(settings, typeof(LogSystems)); // Enables the Echo Editor Window
+        gameObject.AddComponent<EchoRuntimeWindow>(); // Enables the Echo Runtime Window
+        EchoRuntimeWindow.Visible = true; // Call this to show/hide the runtime window from anywhere.
 
         while (true)
         {

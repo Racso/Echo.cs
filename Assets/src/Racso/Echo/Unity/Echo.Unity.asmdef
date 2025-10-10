@@ -1,0 +1,16 @@
+{
+    "name": "Echo.Unity",
+    "rootNamespace": "",
+    "references": [
+        "GUID:cc0d7416e69d2144895cd83a1b9af5e0"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

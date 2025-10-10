@@ -4,14 +4,55 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-namespace Racso.Echo.Editor
+namespace Racso.Echo.Unity.Editor
 {
     public class EchoLogLevelEditorWindow : EditorWindow
     {
+        private const string PrefsKey = "Echo.Config";
+
         [MenuItem("Tools/Racso/Echo Log Level Config")]
         public static void ShowWindow()
         {
             GetWindow<EchoLogLevelEditorWindow>("Echo Log Levels");
+        }
+
+        private void OnEnable()
+        {
+            EchoEditor.Updated += OnEchoEditorUpdated;
+            LoadSettingsFromEditorPrefs();
+        }
+
+        private void OnDisable()
+        {
+            EchoEditor.Updated -= OnEchoEditorUpdated;
+        }
+
+        private void OnEchoEditorUpdated()
+        {
+            SaveSettingsToEditorPrefs();
+        }
+
+        private void SaveSettingsToEditorPrefs()
+        {
+            var settings = EchoEditor.Settings;
+            if (settings != null)
+            {
+                string json = JsonUtility.ToJson(settings);
+                EditorPrefs.SetString(PrefsKey, json);
+            }
+        }
+
+        private void LoadSettingsFromEditorPrefs()
+        {
+            if (EditorPrefs.HasKey(PrefsKey))
+            {
+                string json = EditorPrefs.GetString(PrefsKey);
+                var settings = EchoEditor.Settings;
+                if (settings != null)
+                {
+                    JsonUtility.FromJsonOverwrite(json, settings);
+                }
+            }
         }
 
         private void OnGUI()
