@@ -10,7 +10,7 @@ namespace Racso.EchoLogger.Unity.Editor
     {
         private const string PrefsKey = "Echo.Config";
 
-        [MenuItem("Tools/Racso/Echo Log Level Config")]
+        [MenuItem("Tools/Racso/Echo Logger Window")]
         public static void ShowWindow()
         {
             GetWindow<EchoLogLevelEditorWindow>("Echo Log Levels");

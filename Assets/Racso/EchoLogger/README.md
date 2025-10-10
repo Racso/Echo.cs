@@ -1,6 +1,7 @@
 ﻿# EchoLogger
 
-EchoLogger is a flexible logging library for general C# projects, with seamless Unity integration. It allows you to organize logs by system, control log levels, and use visual tools for log management in Unity.
+EchoLogger is a flexible logging library for general C# projects, with seamless Unity integration. It allows you to
+organize logs by system, control log levels, and use visual tools for log management in Unity.
 
 ## Features
 
@@ -10,140 +11,69 @@ EchoLogger is a flexible logging library for general C# projects, with seamless 
 - Extensible with custom log writers
 - Lightweight and garbage-free.
 
+## Quick Reference
+
+```csharp
+    // INITIALIZATION
+    
+    // You can create your own custom LogWriter by implementing the EchoLogWriter interface...
+    // EchoLogWriter writer = new MyCustomWriter();
+    // Echo echo = new Echo(writer);
+    
+    // ..OR you can use a default built-in Unity writer:
+    Echo echo = EchoUnity.NewDefaultEcho(); // Optional: a LogWriterConfig can be passed to customize the built-in writer.
+    
+    // Optional Unity integration: you can use the Editor and Runtime windows to manage logs.
+    EchoUnity.SetupWindows(echo, typeof(LogSystems)); // Required to use Editor and Runtime windows.
+    
+    // Editor window (in the Unity Editor):
+    // Open it from "Tools > Racso > Echo Logger Window".
+    
+    // Runtime window (in-game):
+    EchoRuntimeWindow runtimeWindow = gameObject.AddComponent<EchoRuntimeWindow>(); // Add this component.
+    runtimeWindow.Visible = true; // Use this to show/hide the runtime window from your code.
+    
+    // USAGE:
+    
+    EchoLogger logger = echo.GetLogger(); // Cached; always returns the same instance.
+    logger.Debug(LogSystems.GUI, "This is a debug message from the GUI system.");
+    logger.Info(LogSystems.Physics, "This is an info message from the Physics system.");
+    logger.Warn(LogSystems.AI, "This is a warning message from the AI system.");
+    logger.Error(LogSystems.Rendering, "This is an error message from the Rendering system.");
+    
+    EchoSystemLogger animationLogger = echo.GetSystemLogger(LogSystems.Animation); // Cached; always returns the same instance for "Animation".
+    animationLogger.Debug("This is a debug message from the Animation system.");
+    animationLogger.Info("This is an info message from the Animation system.");
+    animationLogger.Warn("This is a warning message from the Animation system.");
+    animationLogger.Error("This is an error message from the Animation system.");
+    
+    // To reduce garbage to a minimum, avoid using string interpolation or concatenation in log messages.
+    // Instead, use formatted strings with parameters. Formatting is done only IF the log will be written.
+    string playerName = "John";
+    int playerHealth = Random.Range(0, 100);
+    logger.Info(LogSystems.General, "Player {0} has {1} health.", playerName, playerHealth);
+    
+    // Optional (if using the EchoUnity integration):
+    // The EchoUnity state is cleared on Playmode entry or Domain reload, but you can do it manually, too:
+    EchoUnity.Clear();
+```
+
 ## Installation
 
-Install EchoLogger via Git URL:
+Unity: install EchoLogger via Git URL (Package Manager > + > Add package from git URL):
 
 ```
-https://github.com/your-org/echologger.git
+https://github.com/Racso/toolbox.git?path=/Assets/Racso/EchoLogger#0.1.0
 ```
 
-*(Replace with the actual URL when available)*
-
-## Usage
-
-### General C# Projects
-
-1. Reference the EchoLogger library in your project.
-2. Create an `Echo` instance and use it to log messages:
-
-```csharp
-using Racso.EchoLogger;
-
-Echo echo = new Echo(new MyCustomWriter());
-EchoLogger logger = echo.GetLogger();
-logger.Info("SystemName", "Your log message");
-```
-
-### Unity Integration
-
-1. Add the EchoLogger package to your Unity project.
-2. Use the built-in Unity writer and setup visual tools:
-
-```csharp
-using Racso.EchoLogger.Unity;
-
-Echo echo = EchoUnity.NewDefaultEcho();
-EchoUnity.SetupWindows(echo, typeof(LogSystems));
-EchoRuntimeWindow runtimeWindow = gameObject.AddComponent<EchoRuntimeWindow>();
-runtimeWindow.Visible = true;
-```
-
-3. Log messages by system:
-
-```csharp
-logger.Debug(LogSystems.GUI, "Debug message for GUI");
-```
-
-## Log Systems
-
-Define your log systems as static readonly strings to avoid typos and runtime garbage:
-
-```csharp
-public static class LogSystems
-{
-    public static readonly string GUI = "GUI";
-    public static readonly string Physics = "Physics";
-    public static readonly string AI = "AI";
-    public static readonly string Rendering = "Rendering";
-    public static readonly string Animation = "Animation";
-    public static readonly string Networking = "Networking";
-}
-```
-
-## Example (Unity)
-
-Below is a sample Unity MonoBehaviour demonstrating EchoLogger usage:
-
-```csharp
-using System.Collections;
-using Racso.EchoLogger.Unity;
-using UnityEngine;
-
-namespace Racso.EchoLogger.Demo
-{
-    public class EchoDemoScript : MonoBehaviour
-    {
-        public static class LogSystems
-        {
-            public static readonly string GUI = "GUI";
-            public static readonly string Physics = "Physics";
-            public static readonly string AI = "AI";
-            public static readonly string Rendering = "Rendering";
-            public static readonly string Animation = "Animation";
-            public static readonly string Networking = "Networking";
-        }
-
-        IEnumerator Start()
-        {
-            Echo echo = EchoUnity.NewDefaultEcho();
-            EchoUnity.SetupWindows(echo, typeof(LogSystems));
-            EchoRuntimeWindow runtimeWindow = gameObject.AddComponent<EchoRuntimeWindow>();
-            runtimeWindow.Visible = true;
-
-            while (true)
-            {
-                yield return null;
-                if (Input.GetKeyDown(KeyCode.Space))
-                    PrintLogs(echo);
-            }
-        }
-
-        void PrintLogs(Echo factory)
-        {
-            EchoLogger logger = factory.GetLogger();
-            logger.Debug(LogSystems.GUI, "This is a debug message from the GUI system.");
-            logger.Info(LogSystems.Physics, "This is an info message from the Physics system.");
-            logger.Warn(LogSystems.AI, "This is a warning message from the AI system.");
-            logger.Error(LogSystems.Rendering, "This is an error message from the Rendering system.");
-
-            EchoSystemLogger animationLogger = factory.GetSystemLogger(LogSystems.Animation);
-            animationLogger.Debug("This is a debug message from the Animation system.");
-            animationLogger.Info("This is an info message from the Animation system.");
-            animationLogger.Warn("This is a warning message from the Animation system.");
-            animationLogger.Error("This is an error message from the Animation system.");
-
-            EchoSystemLogger networkingLogger = factory.GetSystemLogger(LogSystems.Networking);
-            networkingLogger.Debug("This is a debug message from the Networking system.");
-            networkingLogger.Info("This is an info message from the Networking system.");
-            networkingLogger.Warn("This is a warning message from the Networking system.");
-            networkingLogger.Error("This is an error message from the Networking system.");
-        }
-
-        private void OnDestroy()
-        {
-            EchoUnity.Clear();
-        }
-    }
-}
-```
-
-## Visual Tools (Unity)
-
-- **Editor Window**: Manage log levels and view logs in the Unity Editor.
-- **Runtime Window**: View and filter logs during play mode.
+Reference the `Echo.asmdef` assembly definition in your scripts.
 
 ## License
 
-MIT (or specify your license here)
+Copyright © 2025 Racso.
+
+This software is part of the Racso Toolbox project: https://github.com/Racso/toolbox 
+
+Please refer to the Toolbox's README file for more information about licensing and terms of use.
+
 
