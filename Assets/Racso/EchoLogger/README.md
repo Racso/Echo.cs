@@ -11,6 +11,16 @@ organize logs by system, control log levels, and use visual tools for log manage
 - Extensible with custom log writers
 - Lightweight and garbage-free.
 
+## Installation
+
+Unity: install EchoLogger via Git URL (Package Manager > + > Add package from git URL):
+
+```
+https://github.com/Racso/toolbox.git?path=/Assets/Racso/EchoLogger#0.1.0
+```
+
+Reference the `Echo.asmdef` assembly definition in your scripts.
+
 ## Quick Reference
 
 ```csharp
@@ -57,16 +67,6 @@ organize logs by system, control log levels, and use visual tools for log manage
     // The EchoUnity state is cleared on Playmode entry or Domain reload, but you can do it manually, too:
     EchoUnity.Clear();
 ```
-
-## Installation
-
-Unity: install EchoLogger via Git URL (Package Manager > + > Add package from git URL):
-
-```
-https://github.com/Racso/toolbox.git?path=/Assets/Racso/EchoLogger#0.1.0
-```
-
-Reference the `Echo.asmdef` assembly definition in your scripts.
 
 ## License
 
