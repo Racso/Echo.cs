@@ -1,7 +1,5 @@
-using System;
 using System.Collections;
 using Racso.Echo;
-using Racso.Echo.LogWriters;
 using Racso.Echo.Unity;
 using UnityEngine;
 
@@ -29,8 +27,8 @@ public class EchoDemoScript : MonoBehaviour
         // EchoLogWriter writer = new MyCustomWriter();
         // EchoFactory factory = new EchoFactory(writer);
 
-        // Or you can use the default built-in writer.
-        EchoFactory factory = new(); // Optional LogWriterConfig can be passed to customize the built-in writer.
+        // Or you can use the default built-in Unity writer.
+        EchoUnityFactory factory = new(); // Optional LogWriterConfig can be passed to customize the built-in writer.
         EchoSettings settings = factory.LogLevels;
         EchoUnity.Setup(settings, typeof(LogSystems)); // Required for the Unity Editor and Runtime windows.
         gameObject.AddComponent<EchoRuntimeWindow>(); // Enables the Echo Runtime Window

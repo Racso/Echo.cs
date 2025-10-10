@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Racso.Echo.LogWriters;
 
 namespace Racso.Echo
 {
@@ -17,34 +16,6 @@ namespace Racso.Echo
             levelsConfig = new();
             loggerCore = new LoggerCore(levelsConfig, hashes, writer);
         }
-
-#if UNITY_2017_1_OR_NEWER
-        public EchoFactory(LogWriterConfig config = null) : this(GetUnityLogger(config))
-        {
-        }
-
-        private static UnityLogWriter GetUnityLogger(LogWriterConfig config)
-        {
-            config ??= new LogWriterConfig
-            {
-                SystemColor = SystemColor.LabelOnly,
-                LevelLabels = false, // Unity already has them
-                Timestamp = false // Unity already has it
-            };
-
-            return new UnityLogWriter(config);
-        }
-#else
-        public EchoFactory(LogWriterConfig config = null) : this(GetConsoleLogger(config))
-        {
-        }
-
-        private static ConsoleLogWriter GetConsoleLogger(LogWriterConfig config)
-        {
-            config ??= new LogWriterConfig();
-            return new ConsoleLogWriter(config);
-        }
-#endif
 
         public EchoLogger GetLogger()
         {

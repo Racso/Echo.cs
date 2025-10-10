@@ -2,7 +2,8 @@
     "name": "Echo.Unity",
     "rootNamespace": "",
     "references": [
-        "GUID:cc0d7416e69d2144895cd83a1b9af5e0"
+        "GUID:cc0d7416e69d2144895cd83a1b9af5e0",
+        "GUID:caeb66a1f1a82e94598ec450ac90ac95"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

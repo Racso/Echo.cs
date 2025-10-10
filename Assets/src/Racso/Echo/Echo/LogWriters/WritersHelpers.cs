@@ -4,9 +4,9 @@ using System.Linq;
 
 namespace Racso.Echo.LogWriters
 {
-    internal static class WritersHelpers
+    public static class WritersHelpers
     {
-        internal static string GetLevelLabel(LogLevel level)
+        public static string GetLevelLabel(LogLevel level)
         {
             return level switch
             {
