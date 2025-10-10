@@ -23,6 +23,12 @@ namespace Racso.Echo
             return systemLevels.GetValueOrDefault(system, DefaultLevel);
         }
 
+        public bool TryGetSystemLevel(string system, out LogLevel level)
+        {
+            ThrowIfInvalidSystem(system);
+            return systemLevels.TryGetValue(system, out level);
+        }
+
         public void ClearSystemLevels()
         {
             systemLevels.Clear();
