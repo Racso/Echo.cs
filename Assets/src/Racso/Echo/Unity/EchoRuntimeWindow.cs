@@ -5,7 +5,8 @@ namespace Racso.Echo.Unity
     public class EchoRuntimeWindow : MonoBehaviour
     {
         public static bool Visible { get; set; } = false;
-        private Rect windowRect = new Rect(100, 100, 400, 400);
+        private Rect windowRect = new Rect(0, 0, 600, 400);
+        private Vector2 scrollPos = Vector2.zero;
         private const string PrefsKey = "Echo.Config";
 
         private void OnEnable()
@@ -52,6 +53,13 @@ namespace Racso.Echo.Unity
         void OnGUI()
         {
             if (!Visible) return;
+            // Dynamically scale window size based on screen resolution
+            float w = Mathf.Clamp(Screen.width * 0.9f, 480, 900);
+            float h = Mathf.Clamp(Screen.height * 0.9f, 240, 700);
+            windowRect.width = w;
+            windowRect.height = h;
+            windowRect.x = 0;
+            windowRect.y = 0;
             windowRect = GUI.Window(12345, windowRect, DrawWindow, "Echo Log Levels");
         }
 
@@ -69,7 +77,7 @@ namespace Racso.Echo.Unity
 
             GUILayout.Label("Default Log Level", GUI.skin.label);
             LogLevel defaultLevel = settings.DefaultLevel;
-            LogLevel newDefault = (LogLevel)GUILayout.SelectionGrid((int)defaultLevel, System.Enum.GetNames(typeof(LogLevel)), System.Enum.GetNames(typeof(LogLevel)).Length);
+            LogLevel newDefault = (LogLevel)GUILayout.SelectionGrid((int)defaultLevel, System.Enum.GetNames(typeof(LogLevel)), System.Enum.GetNames(typeof(LogLevel)).Length, GUILayout.Width(windowRect.width - 40));
             if (newDefault != defaultLevel)
             {
                 settings.SetDefaultLevel(newDefault);
@@ -84,25 +92,35 @@ namespace Racso.Echo.Unity
             for (int i = 0; i < options.Length; i++)
                 popupOptions[i + 1] = options[i];
 
+            scrollPos = GUILayout.BeginScrollView(scrollPos, false, false); //, GUILayout.Height(windowRect.height - 120));
             foreach (string systemName in systemNames)
             {
                 LogLevel level;
                 bool hasExplicit = settings.TryGetSystemLevel(systemName, out level);
                 int selectedIndex = hasExplicit ? (int)level + 1 : 0;
 
+                GUILayout.BeginVertical("box");
+                GUILayout.Label(systemName, GUILayout.Width(windowRect.width - 120));
                 GUILayout.BeginHorizontal();
-                GUILayout.Label(systemName, GUILayout.Width(120));
-                int newIndex = GUILayout.SelectionGrid(selectedIndex, popupOptions, popupOptions.Length);
+                float buttonWidth = (windowRect.width - 120) / popupOptions.Length;
+                for (int i = 0; i < popupOptions.Length; i++)
+                {
+                    bool selected = (selectedIndex == i);
+                    if (GUILayout.Toggle(selected, popupOptions[i], "Button", GUILayout.Width(buttonWidth)))
+                    {
+                        if (i == 0 && hasExplicit)
+                        {
+                            settings.ClearSystemLevel(systemName);
+                        }
+                        else if (i > 0)
+                        {
+                            LogLevel selectedLevel = (LogLevel)(i - 1);
+                            if (!hasExplicit || selectedLevel != level)
+                                settings.SetSystemLevel(systemName, selectedLevel);
+                        }
 
-                if (newIndex == 0 && hasExplicit)
-                {
-                    settings.ClearSystemLevel(systemName);
-                }
-                else if (newIndex > 0)
-                {
-                    LogLevel selectedLevel = (LogLevel)(newIndex - 1);
-                    if (!hasExplicit || selectedLevel != level)
-                        settings.SetSystemLevel(systemName, selectedLevel);
+                        selectedIndex = i;
+                    }
                 }
 
                 if (!hasExplicit)
@@ -111,7 +129,10 @@ namespace Racso.Echo.Unity
                 }
 
                 GUILayout.EndHorizontal();
+                GUILayout.EndVertical();
             }
+
+            GUILayout.EndScrollView();
 
             if (GUILayout.Button("Close"))
                 Visible = false;
