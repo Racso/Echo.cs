@@ -27,14 +27,17 @@ namespace Racso.Echo.LogWriters
             if (config.Timestamp)
                 stringBuilder.AppendFormat("[{0:yyyy-MM-dd HH:mm:ss.fff}] ", DateTime.Now);
 
-            AppendIfEnabled(stringBuilder, config.LevelColors, levelColorTags[(int)level]);
-            stringBuilder.Append("[");
-            stringBuilder.Append(WritersHelpers.GetLabel(level));
-            stringBuilder.Append("]");
-            AppendIfEnabled(stringBuilder, config.LevelColors, "</color>");
-            stringBuilder.Append(" ");
+            if (config.LevelLabels)
+            {
+                AppendIfEnabled(stringBuilder, config.LevelColors, levelColorTags[(int)level]);
+                stringBuilder.Append("[");
+                stringBuilder.Append(WritersHelpers.GetLevelLabel(level));
+                stringBuilder.Append("]");
+                AppendIfEnabled(stringBuilder, config.LevelColors, "</color>");
+                stringBuilder.Append(" ");
+            }
 
-            if (config.SystemColors)
+            if (config.SystemColor is SystemColor.LabelOnly or SystemColor.LabelAndMessage)
             {
                 string colorTag = Helpers.GetElementFromHash(systemColorTags, system);
                 stringBuilder.Append(colorTag);
@@ -43,10 +46,14 @@ namespace Racso.Echo.LogWriters
             stringBuilder.Append("[");
             stringBuilder.Append(system);
             stringBuilder.Append("]");
-            AppendIfEnabled(stringBuilder, config.SystemColors, "</color>");
+            if (config.SystemColor == SystemColor.LabelOnly)
+                stringBuilder.Append("</color>");
             stringBuilder.Append(" ");
 
             stringBuilder.Append(message);
+            if (config.SystemColor == SystemColor.LabelAndMessage)
+                stringBuilder.Append("</color>");
+
             string fullMessage = stringBuilder.ToString();
 
             switch (level)

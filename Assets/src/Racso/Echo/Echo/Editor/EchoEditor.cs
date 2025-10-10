@@ -8,35 +8,30 @@ using UnityEngine;
 
 namespace Racso.Echo.Editor
 {
-    public static class EchoEditorState
+    public static class EchoEditor
     {
-        private static EchoSettings settings;
-        private static List<string> systemNames = new();
-
         private const string EditorPrefsKey = "Racso.Echo";
 
-        public static EchoSettings Settings
+        public static void Setup(EchoSettings settings, IEnumerable<string> systemNames)
         {
-            get => settings;
-
-            set
+            Clear();
+            Settings = settings;
+            if (Settings != null)
             {
-                Clear();
-                settings = value;
-                if (settings != null)
-                {
-                    InitializeFromEditorPrefs();
-                    settings.Updated += OnLevelsUpdated;
-                }
+                InitializeFromEditorPrefs();
+                Settings.Updated += OnLevelsUpdated;
             }
+
+            foreach (string systemName in systemNames)
+                SystemNames.Add(systemName);
         }
 
-        public static List<string> SystemNames => systemNames;
+        public static void Setup(EchoSettings settings, Type systemNamesClass)
+            => Setup(settings, GetStaticStringMembers(systemNamesClass));
 
-        public static void SetSystemNames(Type type)
-        {
-            systemNames = GetStaticStringMembers(type);
-        }
+        internal static EchoSettings Settings { get; private set; }
+
+        internal static List<string> SystemNames { get; } = new();
 
         private static List<string> GetStaticStringMembers(Type staticClassType)
         {
@@ -59,7 +54,7 @@ namespace Racso.Echo.Editor
 
         private static void InitializeFromEditorPrefs()
         {
-            if (settings == null)
+            if (Settings == null)
                 return;
 
             string json = UnityEditor.EditorPrefs.GetString(EditorPrefsKey, null);
@@ -70,24 +65,24 @@ namespace Racso.Echo.Editor
             if (data == null)
                 return;
 
-            settings.SetDefaultLevel(data.DefaultLevel);
-            settings.ClearSystemLevels();
+            Settings.SetDefaultLevel(data.DefaultLevel);
+            Settings.ClearSystemLevels();
             foreach (var kvp in data.SystemLevels)
-                settings.SetSystemLevel(kvp.Key, kvp.Value);
+                Settings.SetSystemLevel(kvp.Key, kvp.Value);
         }
 
         private static void OnLevelsUpdated()
         {
-            if (settings == null)
+            if (Settings == null)
                 return;
 
             EditorPrefsData data = new()
             {
-                DefaultLevel = settings.DefaultLevel,
+                DefaultLevel = Settings.DefaultLevel,
                 SystemLevels = new Dictionary<string, LogLevel>()
             };
 
-            foreach (KeyValuePair<string, LogLevel> field in settings.GetAllSystemLevels())
+            foreach (KeyValuePair<string, LogLevel> field in Settings.GetAllSystemLevels())
                 data.SystemLevels[field.Key] = field.Value;
 
             string json = JsonConvert.SerializeObject(data);
@@ -97,11 +92,12 @@ namespace Racso.Echo.Editor
         }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-        private static void Clear()
+        public static void Clear()
         {
-            if (settings != null)
-                settings.Updated -= OnLevelsUpdated;
-            settings = null;
+            if (Settings != null)
+                Settings.Updated -= OnLevelsUpdated;
+            Settings = null;
+            SystemNames.Clear();
         }
 
         [Serializable]

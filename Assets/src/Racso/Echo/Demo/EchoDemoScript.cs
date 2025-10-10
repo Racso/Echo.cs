@@ -1,10 +1,28 @@
+using System;
 using System.Collections;
 using Racso.Echo;
 using Racso.Echo.Editor;
+using Racso.Echo.LogWriters;
 using UnityEngine;
 
 public class EchoDemoScript : MonoBehaviour
 {
+    /* If you want to use visual tools (like the Echo Editor Window) to manage your log levels,
+     you need to provide a list of your log systems so they can be shown.
+
+     You can define your log systems as strings in a class. We suggest using a static class and readonly strings.
+     This helps avoiding typos. By using hardcoded strings, we avoid generating garbage at runtime (which
+     would happen if we used enums as we'd need to call ToString() on them). */
+    public static class LogSystems
+    {
+        public static readonly string GUI = "GUI";
+        public static readonly string Physics = "Physics";
+        public static readonly string AI = "AI";
+        public static readonly string Rendering = "Rendering";
+        public static readonly string Animation = "Animation";
+        public static readonly string Networking = "Networking";
+    }
+
     IEnumerator Start()
     {
         // You can create your own custom LogWriter by implementing the EchoLogWriter interface.
@@ -12,9 +30,9 @@ public class EchoDemoScript : MonoBehaviour
         // EchoFactory factory = new EchoFactory(writer);
 
         // Or you can use the default built-in writer.
-        EchoFactory factory = new();
+        EchoFactory factory = new(); // Optional LogWriterConfig can be passed to customize the built-in writer.
         EchoSettings settings = factory.LogLevels;
-        EchoEditorState.Settings = settings; // Optional: only needed to edit levels in the Echo Editor Window.
+        EchoEditor.Setup(settings, typeof(LogSystems)); // Enables the Echo Editor Window
 
         while (true)
         {
@@ -28,21 +46,26 @@ public class EchoDemoScript : MonoBehaviour
     void PrintLogs(EchoFactory factory)
     {
         EchoLogger logger = factory.GetLogger(); // Cached; always returns the same instance.
-        logger.Debug("GUI", "This is a debug message from the GUI system.");
-        logger.Info("Physics", "This is an info message from the Physics system.");
-        logger.Warn("AI", "This is a warning message from the AI system.");
-        logger.Error("Rendering", "This is an error message from the Rendering system.");
+        logger.Debug(LogSystems.GUI, "This is a debug message from the GUI system.");
+        logger.Info(LogSystems.Physics, "This is an info message from the Physics system.");
+        logger.Warn(LogSystems.AI, "This is a warning message from the AI system.");
+        logger.Error(LogSystems.Rendering, "This is an error message from the Rendering system.");
 
-        EchoSystemLogger systemLoggerA = factory.GetSystemLogger("Animation"); // Cached; always returns the same instance for "Animation".
+        EchoSystemLogger systemLoggerA = factory.GetSystemLogger(LogSystems.Animation); // Cached; always returns the same instance for "Animation".
         systemLoggerA.Debug("This is a debug message from the Animation system.");
         systemLoggerA.Info("This is an info message from the Animation system.");
         systemLoggerA.Warn("This is a warning message from the Animation system.");
         systemLoggerA.Error("This is an error message from the Animation system.");
 
-        EchoSystemLogger systemLoggerB = factory.GetSystemLogger("Networking"); // Cached; always returns the same instance for "Networking".
+        EchoSystemLogger systemLoggerB = factory.GetSystemLogger(LogSystems.Networking); // Cached; always returns the same instance for "Networking".
         systemLoggerB.Debug("This is a debug message from the Networking system.");
         systemLoggerB.Info("This is an info message from the Networking system.");
         systemLoggerB.Warn("This is a warning message from the Networking system.");
         systemLoggerB.Error("This is an error message from the Networking system.");
+    }
+
+    private void OnDestroy()
+    {
+        EchoEditor.Clear(); // Optional (done automatically on Playmode entry or Domain reload).
     }
 }

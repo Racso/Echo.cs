@@ -23,22 +23,29 @@ namespace Racso.Echo.LogWriters
                 Console.Write("[{0:yyyy-MM-dd HH:mm:ss.fff}] ", DateTime.Now);
             }
 
-            if (config.LevelColors)
-                Console.ForegroundColor = LevelColors[level];
-            Console.Write(WritersHelpers.GetLabel(level));
-            Console.Write(" ");
-            if (config.LevelColors)
-                Console.ResetColor();
+            if (config.LevelLabels)
+            {
+                if (config.LevelColors)
+                    Console.ForegroundColor = LevelColors[level];
+                Console.Write("[");
+                Console.Write(WritersHelpers.GetLevelLabel(level));
+                Console.Write("]");
+                Console.Write(" ");
 
-            if (config.SystemColors)
+                if (config.LevelColors)
+                    Console.ResetColor();
+            }
+
+            if (config.SystemColor is SystemColor.LabelOnly or SystemColor.LabelAndMessage)
                 Console.ForegroundColor = Helpers.GetElementFromHash(SystemColors, system);
             Console.Write("[");
             Console.Write(system);
             Console.Write("] ");
-            if (config.SystemColors)
+            if (config.SystemColor is SystemColor.LabelOnly)
                 Console.ResetColor();
-
             Console.WriteLine(message);
+            if (config.SystemColor is SystemColor.LabelAndMessage)
+                Console.ResetColor();
         }
     }
 }

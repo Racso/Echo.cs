@@ -19,23 +19,32 @@ namespace Racso.Echo
         }
 
 #if UNITY_2017_1_OR_NEWER
-        public EchoFactory(LogWriterConfig config = null) : this(new UnityLogWriter(GetOrDefaultConfig(config)))
+        public EchoFactory(LogWriterConfig config = null) : this(GetUnityLogger(config))
         {
+        }
+
+        private static UnityLogWriter GetUnityLogger(LogWriterConfig config)
+        {
+            config ??= new LogWriterConfig
+            {
+                SystemColor = SystemColor.LabelOnly,
+                LevelLabels = false, // Unity already has them
+                Timestamp = false // Unity already has it
+            };
+
+            return new UnityLogWriter(config);
         }
 #else
-        public EchoFactory(LogWriterConfig config = null) : this(new ConsoleLogWriter(GetOrDefaultConfig(config)))
+        public EchoFactory(LogWriterConfig config = null) : this(GetConsoleLogger(config))
         {
+        }
+
+        private static ConsoleLogWriter GetConsoleLogger(LogWriterConfig config)
+        {
+            config ??= new LogWriterConfig();
+            return new ConsoleLogWriter(config);
         }
 #endif
-
-        private static LogWriterConfig GetOrDefaultConfig(LogWriterConfig config)
-        {
-            return config ?? new LogWriterConfig
-            {
-                SystemColors = true,
-                Timestamp = true,
-            };
-        }
 
         public EchoLogger GetLogger()
         {

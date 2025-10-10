@@ -6,15 +6,15 @@ namespace Racso.Echo.LogWriters
 {
     internal static class WritersHelpers
     {
-        internal static string GetLabel(LogLevel level)
+        internal static string GetLevelLabel(LogLevel level)
         {
             return level switch
             {
-                LogLevel.Debug => "[DEBUG]",
-                LogLevel.Info => "[INFO]",
-                LogLevel.Warn => "[WARN]",
-                LogLevel.Error => "[ERROR]",
-                _ => "[???]"
+                LogLevel.Debug => "DEBUG",
+                LogLevel.Info => "INFO",
+                LogLevel.Warn => "WARN",
+                LogLevel.Error => "ERROR",
+                _ => "???"
             };
         }
 
