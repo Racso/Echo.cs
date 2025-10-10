@@ -39,7 +39,7 @@ namespace Racso.Echo.Editor
 
             foreach (FieldInfo field in staticClassType.GetFields(BindingFlags.Public | BindingFlags.Static))
             {
-                if (field.FieldType != typeof(string) && field.GetValue(null) is string value)
+                if (field.FieldType == typeof(string) && field.GetValue(null) is string value)
                     result.Add(value);
             }
 

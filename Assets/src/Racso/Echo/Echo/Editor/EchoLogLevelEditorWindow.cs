@@ -2,43 +2,22 @@
 
 using System.Collections.Generic;
 using UnityEditor;
+using UnityEngine;
 
 namespace Racso.Echo.Editor
 {
     public class EchoLogLevelEditorWindow : EditorWindow
     {
-        private EchoSettings settings;
-        private List<string> systemNames;
-        private LogLevel defaultLevel;
-        private readonly Dictionary<string, LogLevel> systemLevels = new();
-
         [MenuItem("Tools/Racso/Echo Log Level Config")]
         public static void ShowWindow()
         {
             GetWindow<EchoLogLevelEditorWindow>("Echo Log Levels");
         }
 
-        private void TryInitialize()
-        {
-            if (settings != null)
-                return;
-
-            settings = EchoEditor.Settings;
-            systemNames = EchoEditor.SystemNames;
-            if (settings == null)
-                return;
-
-            defaultLevel = settings.DefaultLevel;
-            systemLevels.Clear();
-            foreach (string systemName in systemNames)
-            {
-                systemLevels[systemName] = settings.GetSystemLevel(systemName);
-            }
-        }
-
         private void OnGUI()
         {
-            TryInitialize();
+            EchoSettings settings = EchoEditor.Settings;
+            List<string> systemNames = EchoEditor.SystemNames;
 
             if (settings == null)
             {
@@ -46,32 +25,52 @@ namespace Racso.Echo.Editor
                 return;
             }
 
-            EditorGUILayout.LabelField("Set All Log Level", EditorStyles.boldLabel);
+            // Default Level Section
+            EditorGUILayout.LabelField("Default Log Level", EditorStyles.boldLabel);
+            LogLevel defaultLevel = settings.DefaultLevel;
             LogLevel newDefault = (LogLevel)EditorGUILayout.EnumPopup(defaultLevel);
             if (newDefault != defaultLevel)
             {
-                defaultLevel = newDefault;
-                settings.SetDefaultLevel(defaultLevel);
-                settings.ClearSystemLevels();
-                // Update UI to reflect cleared system levels
-                foreach (string systemName in systemNames)
-                {
-                    systemLevels[systemName] = defaultLevel;
-                }
+                settings.SetDefaultLevel(newDefault);
             }
 
             EditorGUILayout.Space();
             EditorGUILayout.LabelField("System Log Levels", EditorStyles.boldLabel);
 
-            foreach (string name in systemNames)
+            string[] options = System.Enum.GetNames(typeof(LogLevel));
+            string[] popupOptions = new string[options.Length + 1];
+            popupOptions[0] = "Default";
+            for (int i = 0; i < options.Length; i++)
+                popupOptions[i + 1] = options[i];
+
+            foreach (string systemName in systemNames)
             {
-                LogLevel current = systemLevels[name];
-                LogLevel newLevel = (LogLevel)EditorGUILayout.EnumPopup(name, current);
-                if (newLevel != current)
+                LogLevel level;
+                bool hasExplicit = settings.TryGetSystemLevel(systemName, out level);
+
+                // Build popup options
+                int selectedIndex = hasExplicit ? (int)level + 1 : 0;
+
+                EditorGUILayout.BeginHorizontal();
+                int newIndex = EditorGUILayout.Popup(systemName, selectedIndex, popupOptions);
+
+                if (newIndex == 0 && hasExplicit)
                 {
-                    systemLevels[name] = newLevel;
-                    settings.SetSystemLevel(name, newLevel);
+                    settings.ClearSystemLevel(systemName);
                 }
+                else if (newIndex > 0)
+                {
+                    LogLevel selectedLevel = (LogLevel)(newIndex - 1);
+                    if (!hasExplicit || selectedLevel != level)
+                        settings.SetSystemLevel(systemName, selectedLevel);
+                }
+
+                if (!hasExplicit)
+                {
+                    EditorGUILayout.LabelField("(Default)", GUILayout.Width(70));
+                }
+
+                EditorGUILayout.EndHorizontal();
             }
         }
     }

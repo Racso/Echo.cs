@@ -17,6 +17,13 @@ namespace Racso.Echo
             Updated?.Invoke();
         }
 
+        public void ClearSystemLevel(string system)
+        {
+            ThrowIfInvalidSystem(system);
+            if (systemLevels.Remove(system))
+                Updated?.Invoke();
+        }
+
         public LogLevel GetSystemLevel(string system)
         {
             ThrowIfInvalidSystem(system);
