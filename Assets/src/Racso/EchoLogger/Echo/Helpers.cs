@@ -1,4 +1,4 @@
-﻿namespace Racso.Echo
+﻿namespace Racso.EchoLogger
 {
     public static class Helpers
     {

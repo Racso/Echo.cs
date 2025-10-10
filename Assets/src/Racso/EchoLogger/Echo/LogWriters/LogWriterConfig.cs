@@ -1,4 +1,4 @@
-﻿namespace Racso.Echo.LogWriters
+﻿namespace Assets.Racso.EchoLogger.LogWriters
 {
     public class LogWriterConfig
     {

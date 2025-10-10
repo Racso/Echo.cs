@@ -3,18 +3,19 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Assets.Racso.EchoLogger.LogWriters;
 using UnityEngine;
 
-namespace Racso.Echo.Unity
+namespace Racso.EchoLogger.Unity
 {
     public static class EchoUnity
     {
         public static event Action Updated;
 
-        public static void Setup(EchoSettings settings, IEnumerable<string> systemNames)
+        public static void SetupWindows(Echo echo, IEnumerable<string> systemNames)
         {
             Clear();
-            Settings = settings;
+            Settings = echo.Settings;
             if (Settings != null)
             {
                 Settings.Updated += OnLevelsUpdated;
@@ -24,8 +25,8 @@ namespace Racso.Echo.Unity
                 SystemNames.Add(systemName);
         }
 
-        public static void Setup(EchoSettings settings, Type systemNamesClass)
-            => Setup(settings, GetStaticStringMembers(systemNamesClass));
+        public static void SetupWindows(Echo echo, Type systemNamesClass)
+            => SetupWindows(echo, GetStaticStringMembers(systemNamesClass));
 
         public static EchoSettings Settings { get; private set; }
 
@@ -63,6 +64,19 @@ namespace Racso.Echo.Unity
             Settings = null;
             SystemNames.Clear();
             Updated = null;
+        }
+
+        public static Echo NewDefaultEcho(LogWriterConfig config = null)
+        {
+            config ??= new LogWriterConfig
+            {
+                SystemColor = SystemColor.LabelOnly,
+                LevelLabels = false, // Unity already has them
+                Timestamp = false // Unity already has it
+            };
+
+            UnityLogWriter writer = new(config);
+            return new Echo(writer);
         }
     }
 }

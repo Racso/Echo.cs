@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Racso.Echo
+namespace Racso.EchoLogger
 {
     public class EchoSettings
     {

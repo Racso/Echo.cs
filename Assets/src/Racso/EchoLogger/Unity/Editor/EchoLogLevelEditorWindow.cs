@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-namespace Racso.Echo.Unity.Editor
+namespace Racso.EchoLogger.Unity.Editor
 {
     public class EchoLogLevelEditorWindow : EditorWindow
     {

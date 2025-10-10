@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using Racso.EchoLogger;
 
-namespace Racso.Echo.LogWriters
+namespace Assets.Racso.EchoLogger.LogWriters
 {
     internal class ConsoleLogWriter : EchoLogWriter
     {

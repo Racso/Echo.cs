@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Racso.EchoLogger;
 
-namespace Racso.Echo.LogWriters
+namespace Assets.Racso.EchoLogger.LogWriters
 {
     public static class WritersHelpers
     {

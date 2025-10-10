@@ -1,10 +1,10 @@
 using UnityEngine;
 
-namespace Racso.Echo.Unity
+namespace Racso.EchoLogger.Unity
 {
     public class EchoRuntimeWindow : MonoBehaviour
     {
-        public static bool Visible { get; set; } = false;
+        public bool Visible { get; set; } = false;
         private Rect windowRect = new Rect(0, 0, 600, 400);
         private Vector2 scrollPos = Vector2.zero;
         private const string PrefsKey = "Echo.Config";

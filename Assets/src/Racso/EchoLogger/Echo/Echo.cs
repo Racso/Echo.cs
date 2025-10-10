@@ -1,20 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Racso.Echo
+namespace Racso.EchoLogger
 {
-    public class EchoFactory
+    public class Echo
     {
         private readonly LoggerCore loggerCore;
         private readonly Dictionary<string, object> loggers = new();
-        private readonly EchoSettings levelsConfig;
+        private readonly EchoSettings settings;
 
-        public EchoFactory(EchoLogWriter writer)
+        public Echo(EchoLogWriter writer)
         {
             writer = writer ?? throw new ArgumentNullException(nameof(writer));
             HashesManager hashes = new();
-            levelsConfig = new();
-            loggerCore = new LoggerCore(levelsConfig, hashes, writer);
+            settings = new();
+            loggerCore = new LoggerCore(settings, hashes, writer);
         }
 
         public EchoLogger GetLogger()
@@ -34,6 +34,6 @@ namespace Racso.Echo
             return (EchoSystemLogger)loggers[system];
         }
 
-        public EchoSettings LogLevels => levelsConfig;
+        public EchoSettings Settings => settings;
     }
 }

@@ -1,9 +1,10 @@
 ﻿#if UNITY_2017_1_OR_NEWER
 using System;
 using System.Text;
+using Assets.Racso.EchoLogger.LogWriters;
 using UnityEngine;
 
-namespace Racso.Echo.LogWriters
+namespace Racso.EchoLogger.Unity
 {
     internal class UnityLogWriter : EchoLogWriter
     {

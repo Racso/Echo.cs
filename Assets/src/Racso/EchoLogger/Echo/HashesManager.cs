@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Racso.Echo
+namespace Racso.EchoLogger
 {
     internal class HashesManager
     {

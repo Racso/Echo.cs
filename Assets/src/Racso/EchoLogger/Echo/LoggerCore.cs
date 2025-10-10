@@ -1,6 +1,6 @@
 using System;
 
-namespace Racso.Echo
+namespace Racso.EchoLogger
 {
     internal class LoggerCore
     {
