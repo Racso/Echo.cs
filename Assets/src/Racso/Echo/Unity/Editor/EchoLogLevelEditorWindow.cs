@@ -18,13 +18,13 @@ namespace Racso.Echo.Unity.Editor
 
         private void OnEnable()
         {
-            EchoEditor.Updated += OnEchoEditorUpdated;
+            EchoUnity.Updated += OnEchoEditorUpdated;
             LoadSettingsFromEditorPrefs();
         }
 
         private void OnDisable()
         {
-            EchoEditor.Updated -= OnEchoEditorUpdated;
+            EchoUnity.Updated -= OnEchoEditorUpdated;
         }
 
         private void OnEchoEditorUpdated()
@@ -34,7 +34,7 @@ namespace Racso.Echo.Unity.Editor
 
         private void SaveSettingsToEditorPrefs()
         {
-            var settings = EchoEditor.Settings;
+            var settings = EchoUnity.Settings;
             if (settings != null)
             {
                 string json = JsonUtility.ToJson(settings);
@@ -47,7 +47,7 @@ namespace Racso.Echo.Unity.Editor
             if (EditorPrefs.HasKey(PrefsKey))
             {
                 string json = EditorPrefs.GetString(PrefsKey);
-                var settings = EchoEditor.Settings;
+                var settings = EchoUnity.Settings;
                 if (settings != null)
                 {
                     JsonUtility.FromJsonOverwrite(json, settings);
@@ -57,8 +57,8 @@ namespace Racso.Echo.Unity.Editor
 
         private void OnGUI()
         {
-            EchoSettings settings = EchoEditor.Settings;
-            List<string> systemNames = EchoEditor.SystemNames;
+            EchoSettings settings = EchoUnity.Settings;
+            List<string> systemNames = EchoUnity.SystemNames;
 
             if (settings == null)
             {

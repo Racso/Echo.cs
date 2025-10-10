@@ -11,13 +11,13 @@ namespace Racso.Echo.Unity
 
         private void OnEnable()
         {
-            EchoEditor.Updated += OnEchoEditorUpdated;
+            EchoUnity.Updated += OnEchoEditorUpdated;
             LoadSettingsFromPlayerPrefs();
         }
 
         private void OnDisable()
         {
-            EchoEditor.Updated -= OnEchoEditorUpdated;
+            EchoUnity.Updated -= OnEchoEditorUpdated;
         }
 
         private void OnEchoEditorUpdated()
@@ -27,7 +27,7 @@ namespace Racso.Echo.Unity
 
         private void SaveSettingsToPlayerPrefs()
         {
-            EchoSettings settings = EchoEditor.Settings;
+            EchoSettings settings = EchoUnity.Settings;
             if (settings != null)
             {
                 string json = JsonUtility.ToJson(settings);
@@ -41,7 +41,7 @@ namespace Racso.Echo.Unity
             if (PlayerPrefs.HasKey(PrefsKey))
             {
                 string json = PlayerPrefs.GetString(PrefsKey);
-                EchoSettings settings = EchoEditor.Settings;
+                EchoSettings settings = EchoUnity.Settings;
                 if (settings != null)
                 {
                     JsonUtility.FromJsonOverwrite(json, settings);
@@ -65,8 +65,8 @@ namespace Racso.Echo.Unity
 
         void DrawWindow(int windowID)
         {
-            EchoSettings settings = EchoEditor.Settings;
-            var systemNames = EchoEditor.SystemNames;
+            EchoSettings settings = EchoUnity.Settings;
+            var systemNames = EchoUnity.SystemNames;
 
             if (settings == null)
             {

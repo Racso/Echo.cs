@@ -32,7 +32,7 @@ public class EchoDemoScript : MonoBehaviour
         // Or you can use the default built-in writer.
         EchoFactory factory = new(); // Optional LogWriterConfig can be passed to customize the built-in writer.
         EchoSettings settings = factory.LogLevels;
-        EchoEditor.Setup(settings, typeof(LogSystems)); // Enables the Echo Editor Window
+        EchoUnity.Setup(settings, typeof(LogSystems)); // Required for the Unity Editor and Runtime windows.
         gameObject.AddComponent<EchoRuntimeWindow>(); // Enables the Echo Runtime Window
         EchoRuntimeWindow.Visible = true; // Call this to show/hide the runtime window from anywhere.
 
@@ -68,6 +68,6 @@ public class EchoDemoScript : MonoBehaviour
 
     private void OnDestroy()
     {
-        EchoEditor.Clear(); // Optional (done automatically on Playmode entry or Domain reload).
+        EchoUnity.Clear(); // Optional (done automatically on Playmode entry or Domain reload).
     }
 }

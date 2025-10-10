@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Racso.Echo.Unity
 {
-    public static class EchoEditor
+    public static class EchoUnity
     {
         public static event Action Updated;
 
