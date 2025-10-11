@@ -16,7 +16,7 @@ Echo is a flexible logging library for general C# projects, with seamless Unity 
 Install Echo via Git URL (Package Manager > + > Add package from git URL):
 
 ```
-https://github.com/Racso/toolbox.git?path=/Assets/Racso/EchoLogger#0.1.0
+https://github.com/Racso/Echo.cs.git
 ```
 
 Reference the `Echo.asmdef` assembly definition in your scripts.
