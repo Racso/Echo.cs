@@ -1,13 +1,12 @@
 ﻿{
-  "name": "co.racso.echologger",
-  "displayName": "Racso/EchoLogger",
+  "name": "co.racso.echo",
+  "displayName": "racso.echo",
   "version": "0.3.0",
   "unity": "2020.3",
-  "description": "Flexible logging library for C# and Unity projects with visual log management tools.",
+  "description": "Flexible and powerful logging library for C#. Includes visual tools for Unity projects.",
   "author": {
     "name": "Racso",
     "url": "https://github.com/Racso/toolbox"
   },
-  "license": "MIT"
+  "license": "Copyright © 2025 Racso. This project is part of the Racso Toolbox project. Please see https://github.com/Racso/toolbox for licensing information."
 }
-

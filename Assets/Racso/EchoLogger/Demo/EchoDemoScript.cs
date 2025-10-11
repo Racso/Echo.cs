@@ -32,7 +32,7 @@ namespace Racso.EchoLogger.Demo
             // Echo echo = new Echo(writer);
 
             // ..OR you can use a default built-in Unity writer:
-            Echo echo = EchoUnity.NewDefaultEcho(); // Optional: a LogWriterConfig can be passed to customize the built-in writer.
+            Echo echo = EchoUnity.New(); // Optional: a LogWriterConfig can be passed to customize the built-in writer.
 
             // Optional Unity integration: you can use the Editor and Runtime windows to manage logs.
             EchoUnity.SetupWindows(echo, typeof(LogSystems)); // Required to use Editor and Runtime windows.

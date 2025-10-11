@@ -66,7 +66,7 @@ namespace Racso.EchoLogger.Unity
             Updated = null;
         }
 
-        public static Echo NewDefaultEcho(LogWriterConfig config = null)
+        public static Echo New(LogWriterConfig config = null)
         {
             config ??= new LogWriterConfig
             {
