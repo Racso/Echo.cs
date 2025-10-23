@@ -292,7 +292,7 @@ namespace Racso.EchoLogger.Tests
             Assert.AreEqual(4, writer.Count);
             Assert.AreEqual("Int: 42", writer.GetLogs()[0].Message);
             Assert.AreEqual("String: test", writer.GetLogs()[1].Message);
-            Assert.AreEqual("Double: 3.14", writer.GetLogs()[2].Message);
+            Assert.AreEqual("Double: " + 3.14.ToString(System.Globalization.CultureInfo.CurrentCulture), writer.GetLogs()[2].Message);
             Assert.AreEqual("Bool: True", writer.GetLogs()[3].Message);
 
             // Multiple parameters
