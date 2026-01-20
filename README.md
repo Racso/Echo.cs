@@ -1,121 +1,210 @@
-﻿# Echo
+# Echo
 
-Echo is a flexible logging library for general C# projects, with seamless Unity integration. It allows you to organize logs by system, control log levels, and use visual tools for log management in Unity.
+A flexible and powerful logging library with structured logging, customizable log levels, and extensible log writers. Available for C# and TypeScript with nearly identical APIs.
 
 ## Features
 
-- Structured logging with system tags
-- Customizable log levels
-- Visual log management via Unity Editor and Runtime windows
-- Extensible with custom log writers
-- Lightweight and garbage-free.
+- **Structured logging** with system tags for organized log output
+- **Customizable log levels** (per-system or global): Debug, Info, Warn, Error
+- **String formatting** with parameters (only formatted when log will be written)
+- **Log-once functionality** to prevent duplicate messages
+- **Extensible** with custom log writers
+- **Performance optimized** - garbage-free when logs are filtered out
+- **Type-safe** APIs in both languages
+
+## Quick Start
+
+### C#
+
+```csharp
+// Create an Echo instance
+Echo echo = EchoConsole.New();
+
+// Get a logger
+EchoLogger logger = echo.GetLogger();
+
+// Log messages
+logger.Debug("System", "Debug message");
+logger.Info("System", "Info message");
+logger.Warn("System", "Warning message");
+logger.Error("System", "Error message");
+
+// Use string formatting (only formats if log will be written)
+logger.Info("Physics", "Player {0} has {1} health", playerName, health);
+
+// Get a system-specific logger
+EchoSystemLogger physicsLogger = echo.GetSystemLogger("Physics");
+physicsLogger.Debug("Velocity updated");
+```
+
+### TypeScript
+
+```typescript
+// Create an Echo instance
+const echo = EchoConsole.new();
+
+// Get a logger
+const logger = echo.getLogger();
+
+// Log messages
+logger.debug("System", "Debug message");
+logger.info("System", "Info message");
+logger.warn("System", "Warning message");
+logger.error("System", "Error message");
+
+// Use string formatting (only formats if log will be written)
+logger.info("Physics", "Player {0} has {1} health", playerName, health);
+
+// Get a system-specific logger
+const physicsLogger = echo.getSystemLogger("Physics");
+physicsLogger.debug("Velocity updated");
+```
+
+## API Similarity
+
+The TypeScript port maintains nearly identical API signatures to the C# version. The main differences are:
+
+| Feature | C# | TypeScript |
+|---------|-----|-----------|
+| Method names | PascalCase (`GetLogger()`) | camelCase (`getLogger()`) |
+| Properties | PascalCase (`Settings`) | camelCase (`settings`) |
+| Generic methods | `Debug<T1>(...)` | Optional parameters `debug(..., param1?)` |
+| Events | C# events (`Updated += handler`) | Callbacks (`onUpdated(handler)`) |
+
+### Side-by-Side Comparison
+
+```csharp
+// C#
+Echo echo = EchoConsole.New();
+echo.Settings.SetDefaultLevel(LogLevel.Warn);
+EchoLogger logger = echo.GetLogger();
+logger.Info("System", "Player {0} health", health);
+```
+
+```typescript
+// TypeScript
+const echo = EchoConsole.new();
+echo.settings.setDefaultLevel(LogLevel.Warn);
+const logger = echo.getLogger();
+logger.info("System", "Player {0} health", health);
+```
 
 ## Installation
 
-### Unity
-Install Echo via Git URL (Package Manager > + > Add package from git URL):
+### C# (.NET / Unity)
 
+For Unity projects, install via Git URL in Package Manager:
 ```
 https://github.com/Racso/Echo.cs.git
 ```
 
-Reference the `Echo.asmdef` assembly definition in your scripts.
+For other .NET projects, copy the source files from the `CSharp/` directory.
 
-## Quick Reference
+See [CSharp/README.md](CSharp/README.md) for detailed C# documentation.
 
-```csharp
-    // == INITIALIZATION ==
-    
-    // An Echo instance is the main entry point to the library.
-    
-    // You can instantiate an Echo instance with default behavior for Unity...
-    Echo echo = EchoUnity.New();
-    
-    // ...or with default behavior for Console applications:
-    // Echo echo = EchoConsole.New();
-    
-    // ...or with a custom log writer to suit your specific needs (more on that below):
-    // Echo echo = new Echo(new MyCustomWriter());
-    
-    // Optional Unity integration: you can use the Editor and Runtime windows to manage logs.
-    EchoUnity.SetupWindows(echo, typeof(LogSystems)); // Required to use Editor and Runtime windows.
-    
-    // Editor window (in the Unity Editor):
-    // Open it from "Tools > Racso > Echo Logger Window".
-    
-    // Runtime window (in-game):
-    EchoRuntimeWindow runtimeWindow = gameObject.AddComponent<EchoRuntimeWindow>(); // Add this component.
-    runtimeWindow.Visible = true; // Use this to show/hide the runtime window from your code.
-    
-    // == USAGE ==
-    
-    EchoLogger logger = echo.GetLogger(); // Cached; always returns the same instance.
-    logger.Debug(LogSystems.GUI, "This is a debug message from the GUI system.");
-    logger.Info(LogSystems.Physics, "This is an info message from the Physics system.");
-    logger.Warn(LogSystems.AI, "This is a warning message from the AI system.");
-    logger.Error(LogSystems.Rendering, "This is an error message from the Rendering system.");
-    
-    EchoSystemLogger animationLogger = echo.GetSystemLogger(LogSystems.Animation); // Cached; always returns the same instance for "Animation".
-    animationLogger.Debug("This is a debug message from the Animation system.");
-    animationLogger.Info("This is an info message from the Animation system.");
-    animationLogger.Warn("This is a warning message from the Animation system.");
-    animationLogger.Error("This is an error message from the Animation system.");
-    
-    // To reduce garbage to a minimum, avoid using string interpolation or concatenation in log messages.
-    // Instead, use formatted strings with parameters. Formatting is done only IF the log will be written.
-    string playerName = "John";
-    int playerHealth = Random.Range(0, 100);
-    logger.Info(LogSystems.General, "Player {0} has {1} health.", playerName, playerHealth);
-    
-    // Optional (if using the EchoUnity integration):
-    // The EchoUnity state is cleared on Playmode entry or Domain reload, but you can do it manually, too:
-    EchoUnity.Clear();
+### TypeScript
+
+Copy the TypeScript source from the `TypeScript/` directory or use the compiled version from `TypeScript/dist/`.
+
+```bash
+# Install dependencies
+npm install --save-dev typescript @types/node
+
+# Compile
+cd TypeScript
+npm run build
 ```
 
-## Customizing logs with Log Writers
+See [TypeScript/README.md](TypeScript/README.md) for detailed TypeScript documentation.
 
-Internally, Echo uses a LogWriter to output log messages. You can use built-in log writers or create your own custom ones.
+## Documentation
 
-Echo comes with 2 built-in log writers for Unity and Console applications:
+- **[CSharp/README.md](CSharp/README.md)** - C# version documentation (includes Unity integration)
+- **[TypeScript/README.md](TypeScript/README.md)** - TypeScript version documentation
+- **[API-COMPARISON.md](API-COMPARISON.md)** - Detailed API comparison between C# and TypeScript
 
-- `EchoUnity`: Writes logs to the Unity Console.
-- `EchoConsole`: Writes logs to the standard console output.
+## Core Concepts
 
-Use `EchoUnity.New()` or `EchoConsole.New()` to create an `Echo` instance with the respective built-in log writer.
+### Log Levels
 
-Those methods also accept an optional `LogWriterConfig` parameter to customize log appearance:
+Echo supports four log levels (from most to least verbose):
+- **Debug**: Detailed diagnostic information
+- **Info**: General informational messages
+- **Warn**: Warning messages for potentially harmful situations
+- **Error**: Error messages for failures
 
-- `Timestamp`: Include timestamps in log messages (default: true in Console, false in Unity)
-- `LevelLabels`: Include log level labels (default: true in Console, false in Unity)
-- `LevelColors`: Use colors for log levels (default: true)
-- `SystemColor`: Controls system color usage:
-    - `None`: No color
-    - `LabelOnly`: Color only the system label (default)
-    - `LabelAndMessage`: Color both label and message
+Log levels can be set globally or per-system:
+
+```csharp
+// C#
+echo.Settings.SetDefaultLevel(LogLevel.Warn);  // Global default
+echo.Settings.SetSystemLevel("Physics", LogLevel.Debug);  // System-specific
+```
+
+```typescript
+// TypeScript
+echo.settings.setDefaultLevel(LogLevel.Warn);  // Global default
+echo.settings.setSystemLevel("Physics", LogLevel.Debug);  // System-specific
+```
+
+### System-based Logging
+
+Organize logs by system/component for better filtering and control:
+
+```csharp
+// C# - Using EchoLogger (specify system each time)
+logger.Info("Physics", "Collision detected");
+logger.Info("AI", "Pathfinding complete");
+
+// C# - Using EchoSystemLogger (system set once)
+EchoSystemLogger physicsLogger = echo.GetSystemLogger("Physics");
+physicsLogger.Info("Collision detected");
+```
+
+```typescript
+// TypeScript - Using EchoLogger (specify system each time)
+logger.info("Physics", "Collision detected");
+logger.info("AI", "Pathfinding complete");
+
+// TypeScript - Using EchoSystemLogger (system set once)
+const physicsLogger = echo.getSystemLogger("Physics");
+physicsLogger.info("Collision detected");
+```
 
 ### Custom Log Writers
 
-You can create your own custom LogWriter by implementing the `EchoLogWriter` interface.
+Create custom log writers by implementing the `EchoLogWriter` interface:
 
 ```csharp
-    public interface EchoLogWriter
+// C#
+public class FileLogWriter : EchoLogWriter
+{
+    public void WriteLog(LogLevel level, string system, string message)
     {
-        public void WriteLog(LogLevel level, string system, string message);
+        File.AppendAllText("log.txt", $"{DateTime.Now} [{level}] [{system}] {message}\n");
     }
-    
-    public class MyCustomWriter : EchoLogWriter
-    {
-        public void WriteLog(LogLevel level, string system, string message)
-        {
-            // Custom log writing logic here. Example:
-            Console.WriteLine($"[{level}] [{system}] {message}");
-        }
-    }
-    
-    // Usage:
-    EchoLogWriter writer = new MyCustomWriter();
-    Echo echo = new Echo(writer);
+}
+
+Echo echo = new Echo(new FileLogWriter());
 ```
+
+```typescript
+// TypeScript
+class FileLogWriter implements EchoLogWriter {
+    writeLog(level: LogLevel, system: string, message: string): void {
+        fs.appendFileSync('log.txt', `${new Date()} [${level}] [${system}] ${message}\n`);
+    }
+}
+
+const echo = new Echo(new FileLogWriter());
+```
+
+## Performance
+
+Both implementations are optimized for performance:
+- **No allocations** when logs are filtered out
+- **Lazy formatting** - string formatting only occurs when the log will be written
+- **Instance caching** - loggers are cached and reused
 
 ## License
 

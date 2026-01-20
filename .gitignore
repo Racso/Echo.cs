@@ -76,3 +76,10 @@ Screenshots/
 OrcasServerRunner/obj/
 OrcasServerRunner/.idea/
 OrcasServerRunner/bin/
+
+# TypeScript/Node.js
+node_modules/
+TypeScript/dist/
+*.js
+*.d.ts
+!tsconfig.json
