@@ -11,23 +11,24 @@ TypeScript port of the Echo.cs logging library. This is a flexible and powerful 
 - Extensible with custom log writers
 - Console log writer with colors and timestamps included
 - TypeScript type safety
+- Performance optimized - no allocations when logs are filtered out
 
 ## Installation
 
-Copy the `echo.ts` file into your TypeScript project.
-
 ```bash
-# Install TypeScript if you haven't already
-npm install --save-dev typescript
+# Install dependencies
+npm install
 
-# Compile
-tsc echo.ts
+# Build the library
+npm run build
 ```
+
+The compiled JavaScript and type definitions will be in the `dist/` folder.
 
 ## Quick Start
 
 ```typescript
-import { EchoConsole, LogLevel } from './echo';
+import { EchoConsole, LogLevel } from './dist/echo';
 
 // Create an Echo instance with default console writer
 const echo = EchoConsole.new();

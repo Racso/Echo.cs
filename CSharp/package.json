@@ -1,0 +1,12 @@
+{
+  "name": "co.racso.echo",
+  "displayName": "racso.echo",
+  "version": "1.0.0",
+  "unity": "2020.1",
+  "description": "Flexible and powerful logging library for C#. Includes visual tools for Unity projects.",
+  "author": {
+    "name": "Racso",
+    "url": "https://github.com/Racso/Echo.cs"
+  },
+  "license": "Copyright © 2025 Racso. This project is part of the Racso Toolbox project. Please see https://github.com/Racso/toolbox for licensing information."
+}

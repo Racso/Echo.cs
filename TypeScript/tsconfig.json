@@ -5,7 +5,7 @@
     "lib": ["ES2020"],
     "types": ["node"],
     "declaration": true,
-    "outDir": "./",
+    "outDir": "./dist",
     "rootDir": "./",
     "strict": true,
     "esModuleInterop": true,
@@ -13,6 +13,6 @@
     "forceConsistentCasingInFileNames": true,
     "moduleResolution": "node"
   },
-  "include": ["echo.ts", "echo.test.ts"],
-  "exclude": ["node_modules"]
+  "include": ["echo.ts", "echo.test.ts", "echo.demo.ts"],
+  "exclude": ["node_modules", "dist"]
 }
