@@ -3,7 +3,7 @@
   "displayName": "racso.echo",
   "version": "1.0.0",
   "unity": "2020.1",
-  "description": "Flexible and powerful logging library for C#. Includes visual tools for Unity projects.",
+  "description": "Flexible and powerful logging library for C#. Includes visual tools for Unity projects. TypeScript port available in echo.ts.",
   "author": {
     "name": "Racso",
     "url": "https://github.com/Racso/Echo.cs"
