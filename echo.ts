@@ -151,26 +151,54 @@ class LoggerCore {
         }
     }
 
-    writeIfEnabled(level: LogLevel, mode: LogMode, system: string, message: string): void;
-    writeIfEnabled(level: LogLevel, mode: LogMode, system: string, format: string, ...params: any[]): void;
-    writeIfEnabled(level: LogLevel, mode: LogMode, system: string, formatOrMessage: string, ...params: any[]): void {
+    writeIfEnabled(level: LogLevel, mode: LogMode, system: string, message: string): void {
         if (this.isEnabled(system, level)) {
-            let message: string;
-            if (params.length > 0) {
-                // Format the string using the parameters
-                message = this.formatString(formatOrMessage, ...params);
-            } else {
-                message = formatOrMessage;
-            }
             this.write(level, mode, system, message);
         }
     }
 
-    private formatString(format: string, ...params: any[]): string {
-        return format.replace(/\{(\d+)\}/g, (match, index) => {
-            const idx = parseInt(index);
-            return idx < params.length ? String(params[idx]) : match;
-        });
+    writeIfEnabled1<T1>(level: LogLevel, mode: LogMode, system: string, format: string, param1: T1): void {
+        if (this.isEnabled(system, level)) {
+            const message = this.formatString1(format, param1);
+            this.write(level, mode, system, message);
+        }
+    }
+
+    writeIfEnabled2<T1, T2>(level: LogLevel, mode: LogMode, system: string, format: string, param1: T1, param2: T2): void {
+        if (this.isEnabled(system, level)) {
+            const message = this.formatString2(format, param1, param2);
+            this.write(level, mode, system, message);
+        }
+    }
+
+    writeIfEnabled3<T1, T2, T3>(level: LogLevel, mode: LogMode, system: string, format: string, param1: T1, param2: T2, param3: T3): void {
+        if (this.isEnabled(system, level)) {
+            const message = this.formatString3(format, param1, param2, param3);
+            this.write(level, mode, system, message);
+        }
+    }
+
+    writeIfEnabled4<T1, T2, T3, T4>(level: LogLevel, mode: LogMode, system: string, format: string, param1: T1, param2: T2, param3: T3, param4: T4): void {
+        if (this.isEnabled(system, level)) {
+            const message = this.formatString4(format, param1, param2, param3, param4);
+            this.write(level, mode, system, message);
+        }
+    }
+
+    private formatString1<T1>(format: string, param1: T1): string {
+        return format.replace(/\{0\}/g, String(param1));
+    }
+
+    private formatString2<T1, T2>(format: string, param1: T1, param2: T2): string {
+        return format.replace(/\{0\}/g, String(param1)).replace(/\{1\}/g, String(param2));
+    }
+
+    private formatString3<T1, T2, T3>(format: string, param1: T1, param2: T2, param3: T3): string {
+        return format.replace(/\{0\}/g, String(param1)).replace(/\{1\}/g, String(param2)).replace(/\{2\}/g, String(param3));
+    }
+
+    private formatString4<T1, T2, T3, T4>(format: string, param1: T1, param2: T2, param3: T3, param4: T4): string {
+        return format.replace(/\{0\}/g, String(param1)).replace(/\{1\}/g, String(param2)).replace(/\{2\}/g, String(param3)).replace(/\{3\}/g, String(param4));
     }
 }
 
@@ -251,55 +279,119 @@ export class EchoLogger {
     }
 
     // Debug Methods
-    debug(system: string, message: string): void;
-    debug(system: string, format: string, ...params: any[]): void;
-    debug(system: string, formatOrMessage: string, ...params: any[]): void {
-        this.loggerCore.writeIfEnabled(LogLevel.Debug, LogMode.Always, system, formatOrMessage, ...params);
+    debug(system: string, formatOrMessage: string, param1?: any, param2?: any, param3?: any, param4?: any): void {
+        if (param1 === undefined) {
+            this.loggerCore.writeIfEnabled(LogLevel.Debug, LogMode.Always, system, formatOrMessage);
+        } else if (param2 === undefined) {
+            this.loggerCore.writeIfEnabled1(LogLevel.Debug, LogMode.Always, system, formatOrMessage, param1);
+        } else if (param3 === undefined) {
+            this.loggerCore.writeIfEnabled2(LogLevel.Debug, LogMode.Always, system, formatOrMessage, param1, param2);
+        } else if (param4 === undefined) {
+            this.loggerCore.writeIfEnabled3(LogLevel.Debug, LogMode.Always, system, formatOrMessage, param1, param2, param3);
+        } else {
+            this.loggerCore.writeIfEnabled4(LogLevel.Debug, LogMode.Always, system, formatOrMessage, param1, param2, param3, param4);
+        }
     }
 
-    debug1(system: string, message: string): void;
-    debug1(system: string, format: string, ...params: any[]): void;
-    debug1(system: string, formatOrMessage: string, ...params: any[]): void {
-        this.loggerCore.writeIfEnabled(LogLevel.Debug, LogMode.Once, system, formatOrMessage, ...params);
+    debug1(system: string, formatOrMessage: string, param1?: any, param2?: any, param3?: any, param4?: any): void {
+        if (param1 === undefined) {
+            this.loggerCore.writeIfEnabled(LogLevel.Debug, LogMode.Once, system, formatOrMessage);
+        } else if (param2 === undefined) {
+            this.loggerCore.writeIfEnabled1(LogLevel.Debug, LogMode.Once, system, formatOrMessage, param1);
+        } else if (param3 === undefined) {
+            this.loggerCore.writeIfEnabled2(LogLevel.Debug, LogMode.Once, system, formatOrMessage, param1, param2);
+        } else if (param4 === undefined) {
+            this.loggerCore.writeIfEnabled3(LogLevel.Debug, LogMode.Once, system, formatOrMessage, param1, param2, param3);
+        } else {
+            this.loggerCore.writeIfEnabled4(LogLevel.Debug, LogMode.Once, system, formatOrMessage, param1, param2, param3, param4);
+        }
     }
 
     // Info Methods
-    info(system: string, message: string): void;
-    info(system: string, format: string, ...params: any[]): void;
-    info(system: string, formatOrMessage: string, ...params: any[]): void {
-        this.loggerCore.writeIfEnabled(LogLevel.Info, LogMode.Always, system, formatOrMessage, ...params);
+    info(system: string, formatOrMessage: string, param1?: any, param2?: any, param3?: any, param4?: any): void {
+        if (param1 === undefined) {
+            this.loggerCore.writeIfEnabled(LogLevel.Info, LogMode.Always, system, formatOrMessage);
+        } else if (param2 === undefined) {
+            this.loggerCore.writeIfEnabled1(LogLevel.Info, LogMode.Always, system, formatOrMessage, param1);
+        } else if (param3 === undefined) {
+            this.loggerCore.writeIfEnabled2(LogLevel.Info, LogMode.Always, system, formatOrMessage, param1, param2);
+        } else if (param4 === undefined) {
+            this.loggerCore.writeIfEnabled3(LogLevel.Info, LogMode.Always, system, formatOrMessage, param1, param2, param3);
+        } else {
+            this.loggerCore.writeIfEnabled4(LogLevel.Info, LogMode.Always, system, formatOrMessage, param1, param2, param3, param4);
+        }
     }
 
-    info1(system: string, message: string): void;
-    info1(system: string, format: string, ...params: any[]): void;
-    info1(system: string, formatOrMessage: string, ...params: any[]): void {
-        this.loggerCore.writeIfEnabled(LogLevel.Info, LogMode.Once, system, formatOrMessage, ...params);
+    info1(system: string, formatOrMessage: string, param1?: any, param2?: any, param3?: any, param4?: any): void {
+        if (param1 === undefined) {
+            this.loggerCore.writeIfEnabled(LogLevel.Info, LogMode.Once, system, formatOrMessage);
+        } else if (param2 === undefined) {
+            this.loggerCore.writeIfEnabled1(LogLevel.Info, LogMode.Once, system, formatOrMessage, param1);
+        } else if (param3 === undefined) {
+            this.loggerCore.writeIfEnabled2(LogLevel.Info, LogMode.Once, system, formatOrMessage, param1, param2);
+        } else if (param4 === undefined) {
+            this.loggerCore.writeIfEnabled3(LogLevel.Info, LogMode.Once, system, formatOrMessage, param1, param2, param3);
+        } else {
+            this.loggerCore.writeIfEnabled4(LogLevel.Info, LogMode.Once, system, formatOrMessage, param1, param2, param3, param4);
+        }
     }
 
     // Warn Methods
-    warn(system: string, message: string): void;
-    warn(system: string, format: string, ...params: any[]): void;
-    warn(system: string, formatOrMessage: string, ...params: any[]): void {
-        this.loggerCore.writeIfEnabled(LogLevel.Warn, LogMode.Always, system, formatOrMessage, ...params);
+    warn(system: string, formatOrMessage: string, param1?: any, param2?: any, param3?: any, param4?: any): void {
+        if (param1 === undefined) {
+            this.loggerCore.writeIfEnabled(LogLevel.Warn, LogMode.Always, system, formatOrMessage);
+        } else if (param2 === undefined) {
+            this.loggerCore.writeIfEnabled1(LogLevel.Warn, LogMode.Always, system, formatOrMessage, param1);
+        } else if (param3 === undefined) {
+            this.loggerCore.writeIfEnabled2(LogLevel.Warn, LogMode.Always, system, formatOrMessage, param1, param2);
+        } else if (param4 === undefined) {
+            this.loggerCore.writeIfEnabled3(LogLevel.Warn, LogMode.Always, system, formatOrMessage, param1, param2, param3);
+        } else {
+            this.loggerCore.writeIfEnabled4(LogLevel.Warn, LogMode.Always, system, formatOrMessage, param1, param2, param3, param4);
+        }
     }
 
-    warn1(system: string, message: string): void;
-    warn1(system: string, format: string, ...params: any[]): void;
-    warn1(system: string, formatOrMessage: string, ...params: any[]): void {
-        this.loggerCore.writeIfEnabled(LogLevel.Warn, LogMode.Once, system, formatOrMessage, ...params);
+    warn1(system: string, formatOrMessage: string, param1?: any, param2?: any, param3?: any, param4?: any): void {
+        if (param1 === undefined) {
+            this.loggerCore.writeIfEnabled(LogLevel.Warn, LogMode.Once, system, formatOrMessage);
+        } else if (param2 === undefined) {
+            this.loggerCore.writeIfEnabled1(LogLevel.Warn, LogMode.Once, system, formatOrMessage, param1);
+        } else if (param3 === undefined) {
+            this.loggerCore.writeIfEnabled2(LogLevel.Warn, LogMode.Once, system, formatOrMessage, param1, param2);
+        } else if (param4 === undefined) {
+            this.loggerCore.writeIfEnabled3(LogLevel.Warn, LogMode.Once, system, formatOrMessage, param1, param2, param3);
+        } else {
+            this.loggerCore.writeIfEnabled4(LogLevel.Warn, LogMode.Once, system, formatOrMessage, param1, param2, param3, param4);
+        }
     }
 
     // Error Methods
-    error(system: string, message: string): void;
-    error(system: string, format: string, ...params: any[]): void;
-    error(system: string, formatOrMessage: string, ...params: any[]): void {
-        this.loggerCore.writeIfEnabled(LogLevel.Error, LogMode.Always, system, formatOrMessage, ...params);
+    error(system: string, formatOrMessage: string, param1?: any, param2?: any, param3?: any, param4?: any): void {
+        if (param1 === undefined) {
+            this.loggerCore.writeIfEnabled(LogLevel.Error, LogMode.Always, system, formatOrMessage);
+        } else if (param2 === undefined) {
+            this.loggerCore.writeIfEnabled1(LogLevel.Error, LogMode.Always, system, formatOrMessage, param1);
+        } else if (param3 === undefined) {
+            this.loggerCore.writeIfEnabled2(LogLevel.Error, LogMode.Always, system, formatOrMessage, param1, param2);
+        } else if (param4 === undefined) {
+            this.loggerCore.writeIfEnabled3(LogLevel.Error, LogMode.Always, system, formatOrMessage, param1, param2, param3);
+        } else {
+            this.loggerCore.writeIfEnabled4(LogLevel.Error, LogMode.Always, system, formatOrMessage, param1, param2, param3, param4);
+        }
     }
 
-    error1(system: string, message: string): void;
-    error1(system: string, format: string, ...params: any[]): void;
-    error1(system: string, formatOrMessage: string, ...params: any[]): void {
-        this.loggerCore.writeIfEnabled(LogLevel.Error, LogMode.Once, system, formatOrMessage, ...params);
+    error1(system: string, formatOrMessage: string, param1?: any, param2?: any, param3?: any, param4?: any): void {
+        if (param1 === undefined) {
+            this.loggerCore.writeIfEnabled(LogLevel.Error, LogMode.Once, system, formatOrMessage);
+        } else if (param2 === undefined) {
+            this.loggerCore.writeIfEnabled1(LogLevel.Error, LogMode.Once, system, formatOrMessage, param1);
+        } else if (param3 === undefined) {
+            this.loggerCore.writeIfEnabled2(LogLevel.Error, LogMode.Once, system, formatOrMessage, param1, param2);
+        } else if (param4 === undefined) {
+            this.loggerCore.writeIfEnabled3(LogLevel.Error, LogMode.Once, system, formatOrMessage, param1, param2, param3);
+        } else {
+            this.loggerCore.writeIfEnabled4(LogLevel.Error, LogMode.Once, system, formatOrMessage, param1, param2, param3, param4);
+        }
     }
 }
 
@@ -315,55 +407,119 @@ export class EchoSystemLogger {
     }
 
     // Debug Methods
-    debug(message: string): void;
-    debug(format: string, ...params: any[]): void;
-    debug(formatOrMessage: string, ...params: any[]): void {
-        this.loggerCore.writeIfEnabled(LogLevel.Debug, LogMode.Always, this.system, formatOrMessage, ...params);
+    debug(formatOrMessage: string, param1?: any, param2?: any, param3?: any, param4?: any): void {
+        if (param1 === undefined) {
+            this.loggerCore.writeIfEnabled(LogLevel.Debug, LogMode.Always, this.system, formatOrMessage);
+        } else if (param2 === undefined) {
+            this.loggerCore.writeIfEnabled1(LogLevel.Debug, LogMode.Always, this.system, formatOrMessage, param1);
+        } else if (param3 === undefined) {
+            this.loggerCore.writeIfEnabled2(LogLevel.Debug, LogMode.Always, this.system, formatOrMessage, param1, param2);
+        } else if (param4 === undefined) {
+            this.loggerCore.writeIfEnabled3(LogLevel.Debug, LogMode.Always, this.system, formatOrMessage, param1, param2, param3);
+        } else {
+            this.loggerCore.writeIfEnabled4(LogLevel.Debug, LogMode.Always, this.system, formatOrMessage, param1, param2, param3, param4);
+        }
     }
 
-    debug1(message: string): void;
-    debug1(format: string, ...params: any[]): void;
-    debug1(formatOrMessage: string, ...params: any[]): void {
-        this.loggerCore.writeIfEnabled(LogLevel.Debug, LogMode.Once, this.system, formatOrMessage, ...params);
+    debug1(formatOrMessage: string, param1?: any, param2?: any, param3?: any, param4?: any): void {
+        if (param1 === undefined) {
+            this.loggerCore.writeIfEnabled(LogLevel.Debug, LogMode.Once, this.system, formatOrMessage);
+        } else if (param2 === undefined) {
+            this.loggerCore.writeIfEnabled1(LogLevel.Debug, LogMode.Once, this.system, formatOrMessage, param1);
+        } else if (param3 === undefined) {
+            this.loggerCore.writeIfEnabled2(LogLevel.Debug, LogMode.Once, this.system, formatOrMessage, param1, param2);
+        } else if (param4 === undefined) {
+            this.loggerCore.writeIfEnabled3(LogLevel.Debug, LogMode.Once, this.system, formatOrMessage, param1, param2, param3);
+        } else {
+            this.loggerCore.writeIfEnabled4(LogLevel.Debug, LogMode.Once, this.system, formatOrMessage, param1, param2, param3, param4);
+        }
     }
 
     // Info Methods
-    info(message: string): void;
-    info(format: string, ...params: any[]): void;
-    info(formatOrMessage: string, ...params: any[]): void {
-        this.loggerCore.writeIfEnabled(LogLevel.Info, LogMode.Always, this.system, formatOrMessage, ...params);
+    info(formatOrMessage: string, param1?: any, param2?: any, param3?: any, param4?: any): void {
+        if (param1 === undefined) {
+            this.loggerCore.writeIfEnabled(LogLevel.Info, LogMode.Always, this.system, formatOrMessage);
+        } else if (param2 === undefined) {
+            this.loggerCore.writeIfEnabled1(LogLevel.Info, LogMode.Always, this.system, formatOrMessage, param1);
+        } else if (param3 === undefined) {
+            this.loggerCore.writeIfEnabled2(LogLevel.Info, LogMode.Always, this.system, formatOrMessage, param1, param2);
+        } else if (param4 === undefined) {
+            this.loggerCore.writeIfEnabled3(LogLevel.Info, LogMode.Always, this.system, formatOrMessage, param1, param2, param3);
+        } else {
+            this.loggerCore.writeIfEnabled4(LogLevel.Info, LogMode.Always, this.system, formatOrMessage, param1, param2, param3, param4);
+        }
     }
 
-    info1(message: string): void;
-    info1(format: string, ...params: any[]): void;
-    info1(formatOrMessage: string, ...params: any[]): void {
-        this.loggerCore.writeIfEnabled(LogLevel.Info, LogMode.Once, this.system, formatOrMessage, ...params);
+    info1(formatOrMessage: string, param1?: any, param2?: any, param3?: any, param4?: any): void {
+        if (param1 === undefined) {
+            this.loggerCore.writeIfEnabled(LogLevel.Info, LogMode.Once, this.system, formatOrMessage);
+        } else if (param2 === undefined) {
+            this.loggerCore.writeIfEnabled1(LogLevel.Info, LogMode.Once, this.system, formatOrMessage, param1);
+        } else if (param3 === undefined) {
+            this.loggerCore.writeIfEnabled2(LogLevel.Info, LogMode.Once, this.system, formatOrMessage, param1, param2);
+        } else if (param4 === undefined) {
+            this.loggerCore.writeIfEnabled3(LogLevel.Info, LogMode.Once, this.system, formatOrMessage, param1, param2, param3);
+        } else {
+            this.loggerCore.writeIfEnabled4(LogLevel.Info, LogMode.Once, this.system, formatOrMessage, param1, param2, param3, param4);
+        }
     }
 
     // Warn Methods
-    warn(message: string): void;
-    warn(format: string, ...params: any[]): void;
-    warn(formatOrMessage: string, ...params: any[]): void {
-        this.loggerCore.writeIfEnabled(LogLevel.Warn, LogMode.Always, this.system, formatOrMessage, ...params);
+    warn(formatOrMessage: string, param1?: any, param2?: any, param3?: any, param4?: any): void {
+        if (param1 === undefined) {
+            this.loggerCore.writeIfEnabled(LogLevel.Warn, LogMode.Always, this.system, formatOrMessage);
+        } else if (param2 === undefined) {
+            this.loggerCore.writeIfEnabled1(LogLevel.Warn, LogMode.Always, this.system, formatOrMessage, param1);
+        } else if (param3 === undefined) {
+            this.loggerCore.writeIfEnabled2(LogLevel.Warn, LogMode.Always, this.system, formatOrMessage, param1, param2);
+        } else if (param4 === undefined) {
+            this.loggerCore.writeIfEnabled3(LogLevel.Warn, LogMode.Always, this.system, formatOrMessage, param1, param2, param3);
+        } else {
+            this.loggerCore.writeIfEnabled4(LogLevel.Warn, LogMode.Always, this.system, formatOrMessage, param1, param2, param3, param4);
+        }
     }
 
-    warn1(message: string): void;
-    warn1(format: string, ...params: any[]): void;
-    warn1(formatOrMessage: string, ...params: any[]): void {
-        this.loggerCore.writeIfEnabled(LogLevel.Warn, LogMode.Once, this.system, formatOrMessage, ...params);
+    warn1(formatOrMessage: string, param1?: any, param2?: any, param3?: any, param4?: any): void {
+        if (param1 === undefined) {
+            this.loggerCore.writeIfEnabled(LogLevel.Warn, LogMode.Once, this.system, formatOrMessage);
+        } else if (param2 === undefined) {
+            this.loggerCore.writeIfEnabled1(LogLevel.Warn, LogMode.Once, this.system, formatOrMessage, param1);
+        } else if (param3 === undefined) {
+            this.loggerCore.writeIfEnabled2(LogLevel.Warn, LogMode.Once, this.system, formatOrMessage, param1, param2);
+        } else if (param4 === undefined) {
+            this.loggerCore.writeIfEnabled3(LogLevel.Warn, LogMode.Once, this.system, formatOrMessage, param1, param2, param3);
+        } else {
+            this.loggerCore.writeIfEnabled4(LogLevel.Warn, LogMode.Once, this.system, formatOrMessage, param1, param2, param3, param4);
+        }
     }
 
     // Error Methods
-    error(message: string): void;
-    error(format: string, ...params: any[]): void;
-    error(formatOrMessage: string, ...params: any[]): void {
-        this.loggerCore.writeIfEnabled(LogLevel.Error, LogMode.Always, this.system, formatOrMessage, ...params);
+    error(formatOrMessage: string, param1?: any, param2?: any, param3?: any, param4?: any): void {
+        if (param1 === undefined) {
+            this.loggerCore.writeIfEnabled(LogLevel.Error, LogMode.Always, this.system, formatOrMessage);
+        } else if (param2 === undefined) {
+            this.loggerCore.writeIfEnabled1(LogLevel.Error, LogMode.Always, this.system, formatOrMessage, param1);
+        } else if (param3 === undefined) {
+            this.loggerCore.writeIfEnabled2(LogLevel.Error, LogMode.Always, this.system, formatOrMessage, param1, param2);
+        } else if (param4 === undefined) {
+            this.loggerCore.writeIfEnabled3(LogLevel.Error, LogMode.Always, this.system, formatOrMessage, param1, param2, param3);
+        } else {
+            this.loggerCore.writeIfEnabled4(LogLevel.Error, LogMode.Always, this.system, formatOrMessage, param1, param2, param3, param4);
+        }
     }
 
-    error1(message: string): void;
-    error1(format: string, ...params: any[]): void;
-    error1(formatOrMessage: string, ...params: any[]): void {
-        this.loggerCore.writeIfEnabled(LogLevel.Error, LogMode.Once, this.system, formatOrMessage, ...params);
+    error1(formatOrMessage: string, param1?: any, param2?: any, param3?: any, param4?: any): void {
+        if (param1 === undefined) {
+            this.loggerCore.writeIfEnabled(LogLevel.Error, LogMode.Once, this.system, formatOrMessage);
+        } else if (param2 === undefined) {
+            this.loggerCore.writeIfEnabled1(LogLevel.Error, LogMode.Once, this.system, formatOrMessage, param1);
+        } else if (param3 === undefined) {
+            this.loggerCore.writeIfEnabled2(LogLevel.Error, LogMode.Once, this.system, formatOrMessage, param1, param2);
+        } else if (param4 === undefined) {
+            this.loggerCore.writeIfEnabled3(LogLevel.Error, LogMode.Once, this.system, formatOrMessage, param1, param2, param3);
+        } else {
+            this.loggerCore.writeIfEnabled4(LogLevel.Error, LogMode.Once, this.system, formatOrMessage, param1, param2, param3, param4);
+        }
     }
 }
 
