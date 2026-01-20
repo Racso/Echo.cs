@@ -1,0 +1,22 @@
+{
+  "name": "echo-ts",
+  "version": "1.0.0",
+  "description": "TypeScript port of Echo.cs - A flexible logging library",
+  "main": "echo.js",
+  "types": "echo.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "tsc && node echo.test.js"
+  },
+  "keywords": [
+    "logging",
+    "logger",
+    "typescript"
+  ],
+  "author": "Racso",
+  "license": "SEE LICENSE IN README",
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  }
+}

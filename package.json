@@ -1,4 +1,4 @@
-﻿{
+{
   "name": "co.racso.echo",
   "displayName": "racso.echo",
   "version": "1.0.0",
@@ -8,5 +8,9 @@
     "name": "Racso",
     "url": "https://github.com/Racso/Echo.cs"
   },
-  "license": "Copyright © 2025 Racso. This project is part of the Racso Toolbox project. Please see https://github.com/Racso/toolbox for licensing information."
+  "license": "Copyright © 2025 Racso. This project is part of the Racso Toolbox project. Please see https://github.com/Racso/toolbox for licensing information.",
+  "devDependencies": {
+    "@types/node": "^25.0.9",
+    "typescript": "^5.9.3"
+  }
 }
